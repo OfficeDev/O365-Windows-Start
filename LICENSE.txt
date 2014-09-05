@@ -1,4 +1,4 @@
-O365-APIs-Start-Windows, https://github.com/OfficeDev/O365-APIs-Start-Windows
+O365-APIs-Start-Windows, https://github.com/OfficeDev/Office-365-APIs-Starter-Project-for-Windows
 
 Copyright (c) Microsoft Corporation
 All rights reserved. 
