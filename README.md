@@ -41,7 +41,7 @@ Below are the operations that you can perform with this sample:
 This sample requires the following:
   - Visual Studio 2013 with Update 3.
   - [Office 365 API Tools version 1.1.728](http://visualstudiogallery.msdn.microsoft.com/7e947621-ef93-4de7-93d3-d796c43ba34f).
-  - An [Office 365 developer site](http://msdn.microsoft.com/library/office/fp179924(v=office.15)).
+  - An [Office 365 developer site](https://portal.office.com/Signup/Signup.aspx?OfferId=6881A1CB-F4EB-4db3-9F18-388898DAF510&DL=DEVELOPERPACK&ali=1).
   - At least one sign-on to OneDrive for Business via the web browser.
 
 ###Configure the sample
@@ -57,7 +57,7 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
 
    1. In the Solution Explorer window, choose Office365Starter project -> Add -> Connected Service.
    2. A Services Manager dialog box will appear. Choose Office 365 and Register your app.
-   3. On the sign-in dialog box, enter the username and password for your Office 365 tenant. We recommend that you use your Office 365 Developer Site. Often, this user name will follow the pattern <your-name>@<tenant-name>.onmicrosoft.com. If you do not have a developer site, you can get a free Developer Site as part of your MSDN Benefits or sign up for a free trial. Be aware that the user must be an admin user—but for tenants created as part of an Office 365 Developer Site, this is likely to be the case already. Also developer accounts are usually limited to one sign-in.
+   3. On the sign-in dialog box, enter the username and password for your Office 365 tenant. We recommend that you use your Office 365 Developer Site. Often, this user name will follow the pattern <your-name>@<tenant-name>.onmicrosoft.com. If you do not have a developer site, you can get a free Developer Site as part of your MSDN Benefits or sign up for a free trial. Be aware that the user must be an Tenant Admin user—but for tenants created as part of an Office 365 Developer Site, this is likely to be the case already. Also developer accounts are usually limited to one sign-in.
    4. After you're signed in, you will see a list of all the services. Initially, no permissions will be selected, as the app is not registered to consume any services yet. 
    5. To register for the services used in this sample, choose the following permissions:
 	- (Calendar) – Have full access to users’ calendar
