@@ -16,33 +16,33 @@ Also, it demonstrates how to authenticate against multiple Office 365 services i
 Below are the operations that you can perform with this sample:
 
 Calendar
-  -Add events
-  -Refresh the calendar
-  -Update events
-  -Remove events
+  - Add events
+  - Refresh the calendar
+  - Update events
+  - Remove events
 
 My Files
-  -Get files and folders
-  -Create new files
-  -Delete files or folders
-  -Read file contents (OneDrive)
-  -Update file contents
-  -Download files
-  -Upload files
+  - Get files and folders
+  - Create new files
+  - Delete files or folders
+  - Read file contents (OneDrive)
+  - Update file contents
+  - Download files
+  - Upload files
 
 Users and Groups
-  -Get display name
-  -Get job title
-  -Get profile picture
-  -Get user ID
-  -Check signed in/out state
+  - Get display name
+  - Get job title
+  - Get profile picture
+  - Get user ID
+  - Check signed in/out state
 
 ## Prerequisites and Configuration ##
 
 This sample requires the following:
-  -Visual Studio 2013 with Update 3
-  -Office 365 API Tools version 1.1.728. For the download: http://visualstudiogallery.msdn.microsoft.com/7e947621-ef93-4de7-93d3-d796c43ba34f
-  -An Office 365 developer site
+  - Visual Studio 2013 with Update 3
+  - Office 365 API Tools version 1.1.728. For the download: http://visualstudiogallery.msdn.microsoft.com/7e947621-ef93-4de7-93d3-d796c43ba34f
+  - An Office 365 developer site
 Note: To get an Office 365 Developer site, see Sign up for an Office 365 Developer Site at http://msdn.microsoft.com/library/office/fp179924%28v=office.15%29.
 
 *Configure the sample
@@ -61,9 +61,9 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
    3. On the sign-in dialog box, enter the username and password for your Office 365 tenant. We recommend that you use your Office 365 Developer Site. Often, this user name will follow the pattern <your-name>@<tenant-name>.onmicrosoft.com. If you do not have a developer site, you can get a free Developer Site as part of your MSDN Benefits or sign up for a free trial. Be aware that the user must be an admin user—but for tenants created as part of an Office 365 Developer Site, this is likely to be the case already. Also developer accounts are usually limited to one sign-in.
    4. After you're signed in, you will see a list of all the services. Initially, no permissions will be selected, as the app is not registered to consume any services yet. 
    5. To register for the services used in this sample, choose the following permissions:
-	-(Calendar) – Have full access to users’ calendar
-	-(My Files) – Edit or delete users’ files and Read users’ files
-	-(Users and Groups) – Read and write directory data, Read directory data, and Enable sign-on and read users’ profiles (preview)
+	- (Calendar) – Have full access to users’ calendar
+	- (My Files) – Edit or delete users’ files and Read users’ files
+	- (Users and Groups) – Read and write directory data, Read directory data, and Enable sign-on and read users’ profiles (preview)
    6. After clicking OK in the Services Manager dialog box, assemblies for connecting to Office 365 REST APIs will be added to your project.
 Note: After adding the connected service, three sample files are added to the solution: CalendarApiSample.cs and MyFilesApiSample.cs, and ActiveDirectoryApiSample.cs.
 You may delete these files from the solution as there are no dependencies on these code files in this app.
@@ -76,17 +76,17 @@ After you have loaded the solution/project into Visual Studio, press F5 to build
 ## Project Files of Interest ##
 
 *Helper Classes
-   -CalendarOperations.cs
-   -FileOperations.cs
-   -UserOperations.cs
-   -AuthenticationHelper.cs
+   - CalendarOperations.cs
+   - FileOperations.cs
+   - UserOperations.cs
+   - AuthenticationHelper.cs
 
 *View Models
-   -CalendarViewModel.cs
-   -EventViewModel.cs
-   -FilesViewModel.cs
-   -FileSystemItemViewModel.cs
-   -UserViewModel.cs
+   - CalendarViewModel.cs
+   - EventViewModel.cs
+   - FilesViewModel.cs
+   - FileSystemItemViewModel.cs
+   - UserViewModel.cs
 
 ## Troubleshooting ##
 
@@ -96,8 +96,8 @@ To enable this feature, go to the Windows Privacy Settings menu, turn the toggle
 Known issues as of 9/4
   - You need to use the same credentials to login with the app that were used to configure the connected service in Visual Studio. 
   - You cannot switch users when using the app.
-  - If you target a new Office 65 tenant, you may need to login into OneDrive for Business once before you use this sample. OneDrive for Business has a setup step at first use.
+  - If you target a new Office 365 tenant, you may need to login into OneDrive for Business once before you use this sample. OneDrive for Business has a setup step at first use.
 
-## License ##
+## Copyright ##
 
 Copyright (c) Microsoft. All rights reserved.
