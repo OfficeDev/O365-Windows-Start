@@ -3,11 +3,11 @@
 **Table of Contents**
 
 - [Overview](#overview)
-- [Prerequisites and Configuration](#Prerequisites and Configuration)
+- [Prerequisites and Configuration](#prerequisites)
 - [Build](#build)
-- [Project Files of Interest](#Project Files of Interest)
+- [Project Files of Interest](#project)
 - [Troubleshooting](#troubleshooting)
-- [License](#license)
+- [License](https://github.com/OfficeDev/Office-365-APIs-Starter-Project-for-Windows/blob/master/LICENSE.txt)
 
 ## Overview ##
 
@@ -36,6 +36,7 @@ Below are the operations that you can perform with this sample:
   - Get user ID
   - Check signed in/out state
 
+<a name="prerequisites"></a>
 ## Prerequisites and Configuration ##
 
 This sample requires the following:
@@ -72,6 +73,7 @@ You may delete these files from the solution as there are no dependencies on the
 After you've loaded the solution in Visual Studio, press F5 to build and debug.
 Run the solution and sign in with your organizational account to Office 365.
 
+<a name="project"></a>
 ## Project Files of Interest ##
 
 **Helper Classes**
