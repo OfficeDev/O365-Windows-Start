@@ -3,9 +3,9 @@
 **Table of Contents**
 
 - [Overview](#overview)
-- [Prerequisites and Configuration](#prerequisites)
+- [Prerequisites and Configuration](#Prerequisites and Configuration)
 - [Build](#build)
-- [Project Files of Interest](#project)
+- [Project Files of Interest](#Project Files of Interest)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
 
