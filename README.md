@@ -1,4 +1,4 @@
-# Office 365 Starter Project for Windows Store App #
+﻿# Office 365 Starter Project for Windows Store App #
 
 **Table of Contents**
 
@@ -16,25 +16,25 @@ The sample also demonstrates how to authenticate against multiple Office 365 ser
 We'll be adding examples of how to use Files and Email client APIs in updates to this project, so make sure to check back.
 Below are the operations that you can perform with this sample:
 
-Calendar
-  -Get calendar events
-  -Create events
-  -Update events
-  -Delete events
+Calendar  
+  - Get calendar events  
+  - Create events  
+  - Update events  
+  - Delete events  
 
-Contacts
-  -Get contacts
-  -Create contacts
-  -Update contacts
-  -Delete contacts
-  -Change contact photo
+Contacts  
+  - Get contacts  
+  - Create contacts  
+  - Update contacts  
+  - Delete contacts  
+  - Change contact photo  
 
-Users and Groups
-  -Get display name
-  -Get job title
-  -Get profile picture
-  -Get user ID
-  -Check signed in/out state
+Users and Groups  
+  - Get display name  
+  - Get job title  
+  - Get profile picture  
+  - Get user ID  
+  - Check signed in/out state  
 
 <a name="prerequisites"></a>
 ## Prerequisites and Configuration ##
@@ -60,10 +60,10 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
    2. A Services Manager dialog box will appear. Choose Office 365 and Register your app.
    3. On the sign-in dialog box, enter the username and password for your Office 365 tenant. We recommend that you use your Office 365 Developer Site. Often, this user name will follow the pattern <your-name>@<tenant-name>.onmicrosoft.com. If you do not have a developer site, you can get a free Developer Site as part of your MSDN Benefits or sign up for a free trial. Be aware that the user must be an Tenant Admin user—but for tenants created as part of an Office 365 Developer Site, this is likely to be the case already. Also developer accounts are usually limited to one sign-in.
    4. After you're signed in, you will see a list of all the services. Initially, no permissions will be selected, as the app is not registered to consume any services yet. 
-   5. To register for the services used in this sample, choose the following permissions:
-	- (Calendar) – Have full access to users’ calendar
-	-(Contacts) - Have full access to users' contacts
-	-(Users and Groups) – Enable sign-on and read users' profiles
+   5. To register for the services used in this sample, choose the following permissions:  
+   	- (Calendar) – Have full access to users’ calendar  
+	- (Contacts) - Have full access to users' contacts  
+	- (Users and Groups) – Enable sign-on and read users' profiles  
    6. After clicking OK in the Services Manager dialog box, assemblies for connecting to Office 365 REST APIs will be added to your project.
 
 ## Build ##
@@ -74,18 +74,18 @@ Run the solution and sign in with your organizational account to Office 365.
 <a name="project"></a>
 ## Project Files of Interest ##
 
-**Helper Classes**
-   - CalendarOperations.cs
-   - UserOperations.cs
-   - AuthenticationHelper.cs
-   - ContactOperations.cs
+**Helper Classes**  
+   - CalendarOperations.cs  
+   - UserOperations.cs  
+   - AuthenticationHelper.cs  
+   - ContactOperations.cs  
 
-**View Models**
-   - CalendarViewModel.cs
-   - EventViewModel.cs
-   - UserViewModel.cs
-   - ContactsViewModel.cs
-   - ContactitemviewModel.cs
+**View Models**  
+   - CalendarViewModel.cs  
+   - EventViewModel.cs  
+   - UserViewModel.cs  
+   - ContactsViewModel.cs  
+   - ContactItemViewModel.cs  
 
 ## Troubleshooting ##
 
