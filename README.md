@@ -11,37 +11,37 @@
 
 ## Overview ##
 
-This sample uses the Office 365 APIs Preview client libraries to demonstrate basic operations against the Calendar, My Files, and Users and Groups service endpoints in Office 365. It also demonstrates how to authenticate against multiple Office 365 services in a single app experience, and retrieve user information from the Users and Groups service.
+The Office 365 Starter Project sample uses the Office 365 API Tools client libraries to illustrate basic operations against the Calendar and Contacts service endpoints in Office 365.
+The sample also demonstrates how to authenticate against multiple Office 365 services in a single app experience, and retrieve user information from the Users and Groups service.
+We'll be adding examples of how to use Files and Email client APIs in updates to this project, so make sure to check back.
 Below are the operations that you can perform with this sample:
 
-**Calendar**
-  - Add events
-  - Refresh the calendar
-  - Update events
-  - Remove events
+Calendar
+  -Get calendar events
+  -Create events
+  -Update events
+  -Delete events
 
-**My Files**
-  - Get files and folders
-  - Create new files
-  - Delete files or folders
-  - Read file contents
-  - Update file contents
-  - Download files
-  - Upload files
+Contacts
+  -Get contacts
+  -Create contacts
+  -Update contacts
+  -Delete contacts
+  -Change contact photo
 
-**Users and Groups**
-  - Get display name
-  - Get job title
-  - Get profile picture
-  - Get user ID
-  - Check signed in/out state
+Users and Groups
+  -Get display name
+  -Get job title
+  -Get profile picture
+  -Get user ID
+  -Check signed in/out state
 
 <a name="prerequisites"></a>
 ## Prerequisites and Configuration ##
 
 This sample requires the following:
   - Visual Studio 2013 with Update 3.
-  - [Office 365 API Tools version 1.1.728](http://visualstudiogallery.msdn.microsoft.com/7e947621-ef93-4de7-93d3-d796c43ba34f).
+  - [Office 365 API Tools version 1.2.41027.2](https://visualstudiogallery.msdn.microsoft.com/7e947621-ef93-4de7-93d3-d796c43ba34f).
   - An [Office 365 developer site](https://portal.office.com/Signup/Signup.aspx?OfferId=6881A1CB-F4EB-4db3-9F18-388898DAF510&DL=DEVELOPERPACK&ali=1).
   - At least one sign-on to OneDrive for Business via the web browser.
 
@@ -62,11 +62,9 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
    4. After you're signed in, you will see a list of all the services. Initially, no permissions will be selected, as the app is not registered to consume any services yet. 
    5. To register for the services used in this sample, choose the following permissions:
 	- (Calendar) – Have full access to users’ calendar
-	- (My Files) – Edit or delete users’ files and Read users’ files
-	- (Users and Groups) – Read and write directory data, Read directory data, and Enable sign-on and read users’ profiles (preview)
+	-(Contacts) - Have full access to users' contacts
+	-(Users and Groups) – Enable sign-on and read users' profiles
    6. After clicking OK in the Services Manager dialog box, assemblies for connecting to Office 365 REST APIs will be added to your project.
-Note: After adding the connected service, three sample files are added to the solution: CalendarApiSample.cs and MyFilesApiSample.cs, and ActiveDirectoryApiSample.cs.
-You may delete these files from the solution as there are no dependencies on these code files in this app.
 
 ## Build ##
 
@@ -78,24 +76,20 @@ Run the solution and sign in with your organizational account to Office 365.
 
 **Helper Classes**
    - CalendarOperations.cs
-   - FileOperations.cs
    - UserOperations.cs
    - AuthenticationHelper.cs
+   - ContactOperations.cs
 
 **View Models**
    - CalendarViewModel.cs
    - EventViewModel.cs
-   - FilesViewModel.cs
-   - FileSystemItemViewModel.cs
    - UserViewModel.cs
+   - ContactsViewModel.cs
+   - ContactitemviewModel.cs
 
 ## Troubleshooting ##
 
 You may run into an authentication error after deploying and running if apps do not have the ability to access account information in the [Windows Privacy Settings](http://www.microsoft.com/security/online-privacy/windows.aspx) menu. Set **Let my apps access my name, picture, and other account info** to **On**. This setting can be reset by a Windows Update. 
-
-Known issues as of 9/4
-  - You need to use the same credentials to login with the app that were used to configure the connected service in Visual Studio. 
-  - You cannot switch users when using the app.
 
 ## Copyright ##
 

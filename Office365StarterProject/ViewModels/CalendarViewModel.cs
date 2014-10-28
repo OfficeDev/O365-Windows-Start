@@ -72,7 +72,7 @@ namespace Office365StarterProject.ViewModels
         /// <summary>
         /// The user calendar events to be shown on a bound UI list
         /// </summary>
-        public ObservableCollection<EventViewModel> TodaysEvents { get; private set; }
+        public ObservableCollection<EventViewModel> Events { get; private set; }
 
         /// <summary>
         /// Clears the public selected event properties that are bound to a consuming UI
@@ -101,7 +101,7 @@ namespace Office365StarterProject.ViewModels
         /// <param name="client">ExcangeClient client</param>
         public CalendarViewModel()
         {
-            this.TodaysEvents = new ObservableCollection<EventViewModel>();
+            this.Events = new ObservableCollection<EventViewModel>();
 
             //construct relay commands to be bound to controls on a UI
             this.NewEventCommand = new RelayCommand(ExecuteNewEventCommandAsync);
@@ -116,34 +116,35 @@ namespace Office365StarterProject.ViewModels
         /// <returns></returns>
         public async Task<bool> LoadCalendarAsync()
         {
-            LoggingViewModel.Instance.Information = string.Empty;
+            LoggingViewModel.Instance.Information = "Getting your calendar events ...";
             try
             {
                 //Clear out any calendar events added in previous calls to LoadCalendarAsync()
-                if (TodaysEvents != null)
-                    TodaysEvents.Clear();
+                if (Events != null)
+                    Events.Clear();
                 else
-                    TodaysEvents = new ObservableCollection<EventViewModel>();
+                    Events = new ObservableCollection<EventViewModel>();
 
-                //Get 24 hours worth of calendar events from Exchange service via API
-                List<EventViewModel> events = await _calendarOperations.GetTodaysCalendar(6, 6);
+                // Get calendar events
+                List<EventViewModel> events = await _calendarOperations.GetCalendarEventsAsync();
 
                 if (events.Count == 0)
                 {
-                    LoggingViewModel.Instance.Information = "You have no calendar events today.";
+                    LoggingViewModel.Instance.Information = "You have no calendar events.";
                 }
                 else
                 {
-                //Load today's events into the observable collection that is bound to UI
-                foreach (EventViewModel calendarEvent in events)
-                {
-                    TodaysEvents.Add(calendarEvent);
+                    //Load events into the observable collection that is bound to UI
+                    foreach (EventViewModel calendarEvent in events)
+                    {
+                        Events.Add(calendarEvent);
+                    }
+                    LoggingViewModel.Instance.Information = String.Format("{0} calendar events loaded", Events.Count);
                 }
-            }
             }
             catch (Exception ex)
             {
-                LoggingViewModel.Instance.Information = "Error on load calender " + ex.Message;
+                LoggingViewModel.Instance.Information = "Error loading calendar: " + ex.Message;
                 return false;
             }
             return true;
@@ -168,7 +169,7 @@ namespace Office365StarterProject.ViewModels
             {
                 if (this.SelectedEvent.IsNew)
                 {
-                    this.TodaysEvents.Remove(this.SelectedEvent);
+                    this.Events.Remove(this.SelectedEvent);
                 }
                 else
                 {
@@ -184,14 +185,13 @@ namespace Office365StarterProject.ViewModels
         /// <remarks>The event is created locally.</remarks>
         async void ExecuteNewEventCommandAsync()
         {
-            var aadClient = await AuthenticationHelper.EnsureAadGraphClientCreatedAsync();
+            var aadClient = await AuthenticationHelper.EnsureGraphClientCreatedAsync();
 
-            Microsoft.Office365.ActiveDirectory.IUser currentUser = await (aadClient.Users
+            var currentUser = await (aadClient.Users
                 .Where(i => i.ObjectId == AuthenticationHelper.LoggedInUser)
                 .ExecuteSingleAsync());
-
             var newEvent = new EventViewModel(currentUser.Mail);
-            this.TodaysEvents.Add(newEvent);
+            this.Events.Add(newEvent);
             this.SelectedEvent = newEvent;
             LoggingViewModel.Instance.Information = "Click the Update Event button and we'll save the new event to your calendar";
 
@@ -202,12 +202,11 @@ namespace Office365StarterProject.ViewModels
         /// </summary>
         async void ExecuteGetCalendarEventsCommandAsync()
         {
+            
             this.LoadingCalendarEvents = true;
             //Reload the user's calendar
-            bool succeeded = await this.LoadCalendarAsync();
+            await this.LoadCalendarAsync();
             this.LoadingCalendarEvents = false;
-            if (!succeeded)
-                LoggingViewModel.Instance.Information = "We could not load your calendar events";
         }
         
 
@@ -216,23 +215,19 @@ namespace Office365StarterProject.ViewModels
         /// </summary>
         async void ExecuteDeleteCommandAsync()
         {
-            try
+            if (await MessageDialogHelper.ShowYesNoDialogAsync(String.Format("Are you sure you want to delete the event '{0}'?", this._selectedEvent.DisplayString), "Confirm Deletion"))
             {
-                if (await MessageDialogHelper.ShowYesNoDialogAsync(String.Format("Are you sure you want to delete the event '{0}'?", this._selectedEvent.DisplayString), "Confirm Deletion"))
+                if (!String.IsNullOrEmpty(this._selectedEvent.Id))
                 {
-                    if (!String.IsNullOrEmpty(this._selectedEvent.Id))
+                    var success = await _calendarOperations.DeleteCalendarEventAsync(this._selectedEvent.Id);
+                    if (success)
                     {
-                        await _calendarOperations.DeleteCalendarEventAsync(this._selectedEvent.Id);
+                        //Removes event from bound observable collection
+                        Events.Remove((EventViewModel)_selectedEvent);
                     }
-
-                    //Removes event from bound observable collection
-                    TodaysEvents.Remove((EventViewModel)_selectedEvent);
                 }
+                    
             }
-            catch (Exception)
-            {
-                LoggingViewModel.Instance.Information = "We could not delete your calendar event";
-            }           
         }
  
     }
@@ -244,25 +239,24 @@ namespace Office365StarterProject.ViewModels
 //Copyright (c) Microsoft Corporation
 //All rights reserved. 
 //
-//MIT License:
-//
-//Permission is hereby granted, free of charge, to any person obtaining
-//a copy of this software and associated documentation files (the
-//""Software""), to deal in the Software without restriction, including
-//without limitation the rights to use, copy, modify, merge, publish,
-//distribute, sublicense, and/or sell copies of the Software, and to
-//permit persons to whom the Software is furnished to do so, subject to
-//the following conditions:
-//
-//The above copyright notice and this permission notice shall be
-//included in all copies or substantial portions of the Software.
-//
-//THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-//EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-//MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-//NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-//LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-//OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-//WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// MIT License:
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// ""Software""), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 //********************************************************* 

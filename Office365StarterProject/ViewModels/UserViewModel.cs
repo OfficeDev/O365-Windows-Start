@@ -1,9 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See full license at the bottom of this file.
 
-using Microsoft.Office365.ActiveDirectory;
+using Microsoft.Azure.ActiveDirectory.GraphClient;
+using Microsoft.Office365.OAuth;
 using Office365StarterProject.Common;
 using Office365StarterProject.Helpers;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -18,11 +20,11 @@ namespace Office365StarterProject.ViewModels
         private IUser _currentUser;
         private string _mailAddress;
         private string _id;
-        private string _displayName = "(not signed in)";
+        private string _displayName = "(not connected)";
         private string _jobTitle;
         private bool _signedIn;
-        private string _logOnCaption = "Sign In";
-        private static readonly BitmapImage _signedOutImage = new BitmapImage(new Uri("ms-appx:///assets/UserSignedOut.png", UriKind.RelativeOrAbsolute));
+        private string _logOnCaption = "Connect to Office 365";
+        private static readonly BitmapImage _signedOutImage = new BitmapImage(new Uri("ms-appx:///assets/UserDefault.png", UriKind.RelativeOrAbsolute));
         private BitmapImage _avatar = _signedOutImage;
         private RelayCommand _toggleSignInCommand;
         private UserOperations _userOperations = new UserOperations();
@@ -165,14 +167,9 @@ namespace Office365StarterProject.ViewModels
                         {
                             if (!SignedIn)
                             {
-                                try
-                                {
                                     this.LoggingIn = true;
                                     await SignInCurrentUserAsync();
                                     this.LoggingIn = false;
-                                }
-                                catch (Exception)
-                                { this.LoggingIn = false; }
                             }
                             else
                             {
@@ -199,7 +196,7 @@ namespace Office365StarterProject.ViewModels
             DisplayName = JobTitle = String.Empty;
 
             SignedIn = false;
-            this.LogOnCaption = "Sign In";
+            this.LogOnCaption = "Connect to Office 365";
         }
 
         /// <summary>
@@ -212,12 +209,10 @@ namespace Office365StarterProject.ViewModels
 
             if (_currentUser != null)
             {
-                var profilePhoto = await _userOperations.GetUserThumbnailPhotoAsync(_currentUser);
-
                 this.DisplayName = _currentUser.DisplayName;
                 this.JobTitle = _currentUser.JobTitle;
-                this.Avatar = profilePhoto;
-                this.LogOnCaption = "Sign Out";
+                this.Avatar = await _userOperations.GetUserThumbnailPhotoAsync(_currentUser);
+                this.LogOnCaption = "Disconnect from Office 365";
                 this.Id = _currentUser.ObjectId;
                 this._mailAddress = _currentUser.Mail;
                 this.SignedIn = true;
@@ -232,25 +227,24 @@ namespace Office365StarterProject.ViewModels
 //Copyright (c) Microsoft Corporation
 //All rights reserved. 
 //
-//MIT License:
-//
-//Permission is hereby granted, free of charge, to any person obtaining
-//a copy of this software and associated documentation files (the
-//""Software""), to deal in the Software without restriction, including
-//without limitation the rights to use, copy, modify, merge, publish,
-//distribute, sublicense, and/or sell copies of the Software, and to
-//permit persons to whom the Software is furnished to do so, subject to
-//the following conditions:
-//
-//The above copyright notice and this permission notice shall be
-//included in all copies or substantial portions of the Software.
-//
-//THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-//EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-//MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-//NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-//LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-//OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-//WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// MIT License:
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// ""Software""), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 //********************************************************* 

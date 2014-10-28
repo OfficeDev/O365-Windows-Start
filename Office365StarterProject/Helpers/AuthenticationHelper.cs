@@ -1,13 +1,15 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See full license at the bottom of this file.
 
-using System;
-using System.Threading.Tasks;
-using Microsoft.Office365.SharePoint;
-using Microsoft.Office365.Exchange;
-using Microsoft.Office365.OAuth;
-using Microsoft.Office365.ActiveDirectory;
+using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Office365.Discovery;
+using Microsoft.Office365.OAuth;
+using Microsoft.Office365.OutlookServices;
 using Office365StarterProject.Helpers;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Windows.Security.Authentication.Web;
 
 namespace Office365StarterProject
 {
@@ -16,17 +18,25 @@ namespace Office365StarterProject
     /// </summary>
     internal static class AuthenticationHelper
     {
-        // Exchange Online service endpoints
-        const string ExchangeServiceResourceId = "https://outlook.office365.com";
-        static readonly Uri ExchangeServiceEndpointUri = new Uri("https://outlook.office365.com/ews/odata");
+        // Properties of the native client app
+        // The ClientID is added as a resource in App.xaml when you regiter the app with 
+        // Office 365. As a convenience, we load that value into a variable called ClientID. By doing this, 
+        // whenever you register the app using another account, this variable will be in sync with whatever is in App.xaml.
+        private static readonly string ClientID = App.Current.Resources["ida:ClientID"].ToString();
+        private static Uri ReturnUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
 
-        // Active Directory service endpoints
-        const string AadServiceResourceId = "https://graph.windows.net/";
-        static readonly Uri AadServiceEndpointUri = new Uri("https://graph.windows.net/");
+
+        // Properties used for communicating with the Windows Azure AD tenant of choice
+        // The AuthroizationUri is added as a resource in App.xaml when you regiter the app with 
+        // Office 365. As a convenience, we load that value into a variable called CommonAuthority, adding Common to this Url to signify
+        // multi-tenancy. By doing this, whenever you register the app using another account, this variable will be in sync with whatever is in App.xaml.
+        private static readonly string CommonAuthority = App.Current.Resources["ida:AuthorizationUri"].ToString() + @"/Common";
+        private static readonly Uri DiscoveryServiceEndpointUri = new Uri("https://api.office.com/discovery/v1.0/me/");
+        private const string DiscoveryResourceId = "https://api.office.com/discovery/";
+
+        public static AuthenticationContext AuthenticationContext { get; set; }
 
         static string _loggedInUser;
-        static DiscoveryContext _discoveryContext;
-
         /// <summary>
         /// Gets the logged in user.
         /// </summary>
@@ -39,101 +49,163 @@ namespace Office365StarterProject
         }
 
         /// <summary>
-        /// Checks that an Azure AD client is available to the client.
+        /// Checks that a Graph client is available.
         /// </summary>
-        /// <returns>The Azure AD client.</returns>
-        public static async Task<AadGraphClient> EnsureAadGraphClientCreatedAsync()
+        /// <returns>The Graph client.</returns>
+        public static async Task<ActiveDirectoryClient> EnsureGraphClientCreatedAsync()
         {
-            if (_discoveryContext == null)
+            // Active Directory service endpoints
+            const string AadServiceResourceId = "https://graph.windows.net/";
+            Uri AadServiceEndpointUri = new Uri("https://graph.windows.net/");
+
+            try
             {
-                _discoveryContext = await DiscoveryContext.CreateAsync();
+                AuthenticationContext = new AuthenticationContext(CommonAuthority);
+
+                TokenCacheItem cacheItem = null;
+
+                if (AuthenticationContext.TokenCache.ReadItems().Count() > 0)
+                {
+                    // re-bind the AuthenticationContext to the authority that sourced the token in the cache 
+                    // this is needed for the cache to work when asking a token from that authority 
+                    // (the common endpoint never triggers cache hits) 
+                    cacheItem = AuthenticationContext.TokenCache.ReadItems().First();
+                    AuthenticationContext = new AuthenticationContext(cacheItem.Authority);
+
+                }
+                else
+                {
+                    // Nothing was found in the cache, so let's acquire a token.
+                    var token = await AcquireTokenAsync(AuthenticationContext, AadServiceResourceId);
+
+                    // Check the token
+                    if (String.IsNullOrEmpty(token))
+                    {
+                        // User cancelled sign-in
+                        return null;
+                    }
+                    else
+                    {
+                        // If a token was acquired, the TokenCache will contain a TokenCacheItem containing
+                        // all the details of the authorization.
+                        cacheItem = AuthenticationContext.TokenCache.ReadItems().First();
+                    }
+                }
+
+                // Store the Id of the logged-in user so that we can retrieve more user info later.
+                _loggedInUser = cacheItem.UniqueId;
+                
+                // Create our ActiveDirectory client.
+                var client = new ActiveDirectoryClient(
+                    new Uri(AadServiceEndpointUri, cacheItem.TenantId),
+                    async () => await AcquireTokenAsync(AuthenticationContext, AadServiceResourceId));
+
+                return client;
             }
-
-            var dcr = await _discoveryContext.DiscoverResourceAsync(AadServiceResourceId);
-
-            _loggedInUser = dcr.UserId;
-
-
-            return new AadGraphClient(new Uri(AadServiceEndpointUri, dcr.TenantId), async () =>
+            // The following is a list of all exceptions you should consider handling in your app.
+            // In the case of this sample, the exceptions are handled by returning null upstream. 
+            catch (DiscoveryFailedException dfe)
             {
-                return (await _discoveryContext.AuthenticationContext.AcquireTokenSilentAsync(AadServiceResourceId, _discoveryContext.AppIdentity.ClientId
-                    , new Microsoft.IdentityModel.Clients.ActiveDirectory.UserIdentifier(dcr.UserId, Microsoft.IdentityModel.Clients.ActiveDirectory.UserIdentifierType.UniqueId))).AccessToken;
-            });
+                MessageDialogHelper.DisplayException(dfe as Exception);
+
+                // Discovery failed.
+                AuthenticationContext.TokenCache.Clear();
+                return null;
+            }
+            catch (MissingConfigurationValueException mcve)
+            {
+                MessageDialogHelper.DisplayException(mcve);
+
+                // Connected services not added correctly, or permissions not set correctly.
+                AuthenticationContext.TokenCache.Clear();
+                return null;
+            }
+            catch (AuthenticationFailedException afe)
+            {
+                MessageDialogHelper.DisplayException(afe);
+
+                // Failed to authenticate the user
+                AuthenticationContext.TokenCache.Clear();
+                return null;
+
+            }
+            catch (ArgumentException ae)
+            {
+                MessageDialogHelper.DisplayException(ae as Exception);
+
+                // Argument exception
+                AuthenticationContext.TokenCache.Clear();
+                return null;
+            }
         }
 
         /// <summary>
-        /// Checks that an Exchange client is available to the client.
+        /// Checks that an OutlookServicesClient object is available. 
         /// </summary>
-        /// <returns>The Exchange Online client.</returns>
-        public static async Task<ExchangeClient> EnsureCalendarClientCreatedAsync()
+        /// <returns>The OutlookServicesClient object. </returns>
+        public static async Task<OutlookServicesClient> EnsureOutlookClientCreatedAsync()
         {
             try
             {
-                if (_discoveryContext == null)
+                AuthenticationContext = new AuthenticationContext(CommonAuthority);
+
+                if (AuthenticationContext.TokenCache.ReadItems().Count() > 0)
                 {
-                    _discoveryContext = await DiscoveryContext.CreateAsync();
+                    // re-bind the AuthenticationContext to the authority that sourced the token in the cache 
+                    // this is needed for the cache to work when asking for a token from that authority 
+                    // (the common endpoint never triggers cache hits) 
+                    string cachedAuthority = AuthenticationContext.TokenCache.ReadItems().First().Authority;
+                    AuthenticationContext = new AuthenticationContext(cachedAuthority);
+
                 }
 
-                var dcr = await _discoveryContext.DiscoverResourceAsync(ExchangeServiceResourceId);
+                // Create a DiscoveryClient using the discovery endpoint Uri.  
+                DiscoveryClient discovery = new DiscoveryClient(DiscoveryServiceEndpointUri,
+                    async () => await AcquireTokenAsync(AuthenticationContext, DiscoveryResourceId));
 
-                _loggedInUser = dcr.UserId;
+                // Now get the capability that you are interested in.
+                CapabilityDiscoveryResult result = await discovery.DiscoverCapabilityAsync("Mail");
 
-                return new ExchangeClient(ExchangeServiceEndpointUri, async () =>
-                {
-                    return (await _discoveryContext.AuthenticationContext.AcquireTokenSilentAsync(ExchangeServiceResourceId, _discoveryContext.AppIdentity.ClientId, new Microsoft.IdentityModel.Clients.ActiveDirectory.UserIdentifier(dcr.UserId, Microsoft.IdentityModel.Clients.ActiveDirectory.UserIdentifierType.UniqueId))).AccessToken;
-                });
+                var client = new OutlookServicesClient(
+                    result.ServiceEndpointUri,
+                    async () => await AcquireTokenAsync(AuthenticationContext, result.ServiceResourceId));
 
+                return client;
             }
-            catch (AuthenticationFailedException ex)
+            // The following is a list of all exceptions you should consider handling in your app.
+            // In the case of this sample, the exceptions are handled by returning null upstream. 
+            catch (DiscoveryFailedException dfe)
             {
-                string errorText = String.Format(
-                    "{0}, code {1}.  EnsureCalendarClientCreatedAsync - failed",
-                    ex.ErrorDescription,
-                    ex.ErrorCode);
+                MessageDialogHelper.DisplayException(dfe as Exception);
 
-                LoggingViewModel.Instance.Information = errorText;
+                // Discovery failed.
+                AuthenticationContext.TokenCache.Clear();
+                return null;
             }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Checks that a SharePoint client is available to the client.
-        /// </summary>
-        /// <returns>The SharePoint Online client.</returns>
-        public static async Task<SharePointClient> EnsureSharePointClientCreatedAsync()
-        {
-            try
+            catch (MissingConfigurationValueException mcve)
             {
-                if (_discoveryContext == null)
-                {
-                    _discoveryContext = await DiscoveryContext.CreateAsync();
-                }
+                MessageDialogHelper.DisplayException(mcve);
 
-                var dcr = await _discoveryContext.DiscoverCapabilityAsync("MyFiles");
-                var serviceEndPointUri = dcr.ServiceEndpointUri;
-                var serviceResourceId = dcr.ServiceResourceId;
-
-                _loggedInUser = dcr.UserId;
-
-                return new SharePointClient(serviceEndPointUri, async () =>
-                {
-                    return (await _discoveryContext.AuthenticationContext.AcquireTokenSilentAsync(serviceResourceId, _discoveryContext.AppIdentity.ClientId, new Microsoft.IdentityModel.Clients.ActiveDirectory.UserIdentifier(dcr.UserId, Microsoft.IdentityModel.Clients.ActiveDirectory.UserIdentifierType.UniqueId))).AccessToken;
-                });
-
+                // Connected services not added correctly, or permissions not set correctly.
+                AuthenticationContext.TokenCache.Clear();
+                return null;
             }
-            catch (AuthenticationFailedException ex)
+            catch (AuthenticationFailedException afe)
             {
-                string errorText = String.Format(
-                    "{0}, code {1}.  EnsureSharePointClientCreatedAsync - failed",
-                    ex.ErrorDescription,
-                    ex.ErrorCode
-                    );
+                MessageDialogHelper.DisplayException(afe);
 
-                LoggingViewModel.Instance.Information = errorText;
+                // Failed to authenticate the user
+                AuthenticationContext.TokenCache.Clear();
+                return null;
+
             }
-
-            return null;
+            catch (ArgumentException ae)
+            {
+                MessageDialogHelper.DisplayException(ae as Exception);
+                // Argument exception
+                AuthenticationContext.TokenCache.Clear();
+                return null;
+            }
         }
 
         /// <summary>
@@ -146,13 +218,36 @@ namespace Office365StarterProject
                 return;
             }
 
-            if (_discoveryContext == null)
+            await AuthenticationContext.LogoutAsync(_loggedInUser);
+            AuthenticationContext.TokenCache.Clear();
+        }
+
+        // Get an access token for the given context and resourceId. An attempt is first made to 
+        // acquire the token silently. If that fails, then we try to acquire the token through the Common Consent dialog.
+        private static async Task<string> AcquireTokenAsync(AuthenticationContext context, string resourceId)
+        {
+            string accessToken = null;
+
+            try
             {
-                _discoveryContext = await DiscoveryContext.CreateAsync();
+                // First, we are going to try to get the access tokn silently using the resourceId that was passed in
+                // and the clientId of the application...
+                accessToken = (await context.AcquireTokenSilentAsync(resourceId, ClientID)).AccessToken;
+            }
+            catch (Exception)
+            {
+                // We were unable to acquire the AccessToken silently. So, we'll try again with full
+                // prompting. 
+                accessToken = null;
+
             }
 
-            await _discoveryContext.LogoutAsync(_loggedInUser);
+            if (accessToken == "" || accessToken == null)
+                accessToken = (await context.AcquireTokenAsync(resourceId, ClientID, ReturnUri)).AccessToken;
+
+            return accessToken;
         }
+
     }
 }
 //********************************************************* 
@@ -162,25 +257,24 @@ namespace Office365StarterProject
 //Copyright (c) Microsoft Corporation
 //All rights reserved. 
 //
-//MIT License:
-//
-//Permission is hereby granted, free of charge, to any person obtaining
-//a copy of this software and associated documentation files (the
-//""Software""), to deal in the Software without restriction, including
-//without limitation the rights to use, copy, modify, merge, publish,
-//distribute, sublicense, and/or sell copies of the Software, and to
-//permit persons to whom the Software is furnished to do so, subject to
-//the following conditions:
-//
-//The above copyright notice and this permission notice shall be
-//included in all copies or substantial portions of the Software.
-//
-//THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-//EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-//MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-//NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-//LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-//OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-//WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// MIT License:
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// ""Software""), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 //********************************************************* 

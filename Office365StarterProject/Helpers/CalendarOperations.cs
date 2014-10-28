@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See full license at the bottom of this file.
 
-using Microsoft.Office365.Exchange;
+using Microsoft.Office365.OutlookServices;
 using Office365StarterProject.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -18,42 +18,30 @@ namespace Office365StarterProject.Helpers
         /// <summary>
         /// Gets the details of an event.
         /// </summary>
-        /// <param name="SelectedEventId">string. The unique identifier of an event selected in the UI.</param>
+        /// <param name="eventId">string. The unique identifier of an event selected in the UI.</param>
         /// <returns>A calendar event.</returns>
-        internal async Task<IEvent> GetEventDetailsAsync(string SelectedEventId)
+        internal async Task<IEvent> GetEventDetailsAsync(string eventId)
         {
             // Make sure we have a reference to the calendar client
-            var calendarClient = await AuthenticationHelper.EnsureCalendarClientCreatedAsync();
+            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
 
             // This results in a call to the service.
-            var thisEventFetcher = calendarClient.Me.Calendar.Events.GetById(SelectedEventId);
-            var thisEvent = await thisEventFetcher.ExecuteAsync();
-            return thisEvent;
+            return await exchangeClient.Me.Calendar.Events.GetById(eventId).ExecuteAsync();
         }
 
         /// <summary>
-        /// Gets a collection of events for today's calendar.
+        /// Gets a collection of calendar events.
         /// </summary>
-        /// <param name="hoursBefore">int. The beginning of the TimeSpan that defines which events are returned.</param>
-        /// <param name="hoursAfter">int. The end of the TimeSpan that defines which events are returned.</param>
-        /// <returns>A collection of all calendar events found for the specified time range.</returns>
-        internal async Task<List<EventViewModel>> GetTodaysCalendar(int hoursBefore, int hoursAfter)
+        /// <returns>A collection of all calendar events.</returns>
+        internal async Task<List<EventViewModel>> GetCalendarEventsAsync()
         {
-            // Make sure we have a reference to the calendar client
-            var calendarClient = await AuthenticationHelper.EnsureCalendarClientCreatedAsync();
+            // Make sure we have a reference to the Exchange client
+            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
 
             List<EventViewModel> returnResults = new List<EventViewModel>();
 
-            // Obtain calendar event data for start times from the range of 6 hours
-            // before now to 6 hours after now. Get the first 48 calender events in the range.
-            // This results in a call to the service.
-            var eventsResults = await (from i in calendarClient.Me.Calendar.Events
-                                       where i.Start >= DateTimeOffset.Now.Subtract(new TimeSpan(hoursBefore, 0, 0)) &&
-                                       i.Start <= DateTimeOffset.Now.AddHours(hoursAfter)
-                                       select i).Take(48).ExecuteAsync();
-
-            var events = eventsResults.CurrentPage.OrderBy(e => e.Start);
-            foreach (IEvent calendarEvent in events)
+            var eventsResults = await exchangeClient.Me.Calendar.Events.OrderBy(e => e.Start).ExecuteAsync();
+            foreach (IEvent calendarEvent in eventsResults.CurrentPage)
             {
                 IEvent thisEvent = await GetEventDetailsAsync( calendarEvent.Id);
                 EventViewModel calendarEventModel = new EventViewModel(thisEvent);
@@ -97,7 +85,7 @@ namespace Office365StarterProject.Helpers
             {
                 attendees[i] = new Attendee();
                 attendees[i].Type = AttendeeType.Required;
-                attendees[i].Address = splitAttendeeString[i];
+                attendees[i].EmailAddress = new EmailAddress() { Address = splitAttendeeString[i], Name = splitAttendeeString[i] };
             }
 
             Event newEvent = new Event
@@ -116,11 +104,10 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the calendar client
-                var calendarClient = await AuthenticationHelper.EnsureCalendarClientCreatedAsync();
+                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
 
                 // This results in a call to the service.
-                await calendarClient.Me.Events.AddEventAsync(newEvent);
-                await ((IEventFetcher)newEvent).ExecuteAsync();
+                await exchangeClient.Me.Events.AddEventAsync(newEvent);
                 newEventId = newEvent.Id;
             }
             catch (Exception e)
@@ -153,11 +140,10 @@ namespace Office365StarterProject.Helpers
             TimeSpan startTime,
             TimeSpan endTime)
         {
-            // Make sure we have a reference to the calendar client
-            var calendarClient = await AuthenticationHelper.EnsureCalendarClientCreatedAsync();
+            // Make sure we have a reference to the Exchange client
+            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
 
-            var thisEventFetcher = calendarClient.Me.Calendar.Events.GetById(selectedEventId);
-            IEvent eventToUpdate = await thisEventFetcher.ExecuteAsync();
+            var eventToUpdate = await exchangeClient.Me.Calendar.Events.GetById(selectedEventId).ExecuteAsync();
             eventToUpdate.Attendees.Clear();
             string[] splitter = { ";" };
             var splitAttendeeString = Attendees.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
@@ -165,7 +151,7 @@ namespace Office365StarterProject.Helpers
             for (int i = 0; i < splitAttendeeString.Length; i++)
             {
                 Attendee newAttendee = new Attendee();
-                newAttendee.Address = splitAttendeeString[i];
+                newAttendee.EmailAddress = new EmailAddress() { Name = splitAttendeeString[i], Address = splitAttendeeString[i] };
                 newAttendee.Type = AttendeeType.Required;
                 eventToUpdate.Attendees.Add(newAttendee);
             }
@@ -182,11 +168,17 @@ namespace Office365StarterProject.Helpers
             eventToUpdate.Body = body;   
             try
             {
-                // Writes data to API client model.
-                await eventToUpdate.UpdateAsync(true);
 
-                // Uupdates the event on the server. This results in a call to the service.
-                await calendarClient.Context.SaveChangesAsync();
+                // Update the calendar event in Exchange
+                await eventToUpdate.UpdateAsync();
+
+                // A note about Batch Updating
+                // You can save multiple updates on the client and save them all at once (batch) by 
+                // implementing the following pattern:
+                // 1. Call UpdateAsync(true) for each event you want to update. Setting the parameter dontSave to true 
+                //    means that the updates are registered locally on the client, but won't be posted to the server.
+                // 2. Call exchangeClient.Context.SaveChangesAsync() to post all event updates you have saved locally  
+                //    using the preceding UpdateAsync(true) call to the server, i.e., the user's Office 365 calendar.
             }
             catch (Exception)
             {
@@ -200,26 +192,29 @@ namespace Office365StarterProject.Helpers
         /// </summary>
         /// <param name="selectedEventId">string. The unique Id of the event to delete.</param>
         /// <returns></returns>
-        internal async  Task<IEvent> DeleteCalendarEventAsync(string selectedEventId)
+        internal async  Task<bool> DeleteCalendarEventAsync(string selectedEventId)
         {
-            IEvent thisEvent = null;
+            LoggingViewModel.Instance.Information = "Deleting event ...";
             try
             {
-                // Make sure we have a reference to the calendar client
-                var calendarClient = await AuthenticationHelper.EnsureCalendarClientCreatedAsync();
+                // Make sure we have a reference to the Exchange client
+                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
 
                 // Get the event to be removed from the Exchange service. This results in a call to the service.
-                var thisEventFetcher = calendarClient.Me.Calendar.Events.GetById(selectedEventId);
-                thisEvent = await thisEventFetcher.ExecuteAsync();
+                var eventToDelete = await exchangeClient.Me.Calendar.Events.GetById(selectedEventId).ExecuteAsync();
 
                 // Delete the event. This results in a call to the service.
-                await thisEvent.DeleteAsync(false);
+                await eventToDelete.DeleteAsync(false);
+
+                LoggingViewModel.Instance.Information = "Event deleted";
+
+                return true;
             }
             catch (Exception)
             {
-                throw new Exception("Your calendar event was not deleted on the Exchange service");
+                LoggingViewModel.Instance.Information = "Could not delete event";
             }
-            return thisEvent;
+            return false;
         }
 
 
@@ -236,11 +231,11 @@ namespace Office365StarterProject.Helpers
             {
                 if (attendeeListBuilder.Length == 0)
                 {
-                    attendeeListBuilder.Append(attendee.Address);
+                    attendeeListBuilder.Append(attendee.EmailAddress.Address);
                 }
                 else
                 {
-                    attendeeListBuilder.Append(";" + attendee.Address);
+                    attendeeListBuilder.Append(";" + attendee.EmailAddress.Address);
                 }
             }
 
@@ -285,25 +280,24 @@ namespace Office365StarterProject.Helpers
 //Copyright (c) Microsoft Corporation
 //All rights reserved. 
 //
-//MIT License:
-//
-//Permission is hereby granted, free of charge, to any person obtaining
-//a copy of this software and associated documentation files (the
-//""Software""), to deal in the Software without restriction, including
-//without limitation the rights to use, copy, modify, merge, publish,
-//distribute, sublicense, and/or sell copies of the Software, and to
-//permit persons to whom the Software is furnished to do so, subject to
-//the following conditions:
-//
-//The above copyright notice and this permission notice shall be
-//included in all copies or substantial portions of the Software.
-//
-//THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-//EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-//MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-//NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-//LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-//OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-//WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// MIT License:
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// ""Software""), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 //********************************************************* 

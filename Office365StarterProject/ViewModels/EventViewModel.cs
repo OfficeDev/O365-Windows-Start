@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See full license at the bottom of this file.
 
-using Microsoft.Office365.Exchange;
+using Microsoft.Office365.OutlookServices;
 using Office365StarterProject.Common;
 using Office365StarterProject.Helpers;
 using System;
 using System.Text.RegularExpressions;
+using Windows.Globalization.DateTimeFormatting;
 
 namespace Office365StarterProject.ViewModels
 {
@@ -73,6 +74,7 @@ namespace Office365StarterProject.ViewModels
                 if (SetProperty(ref _startTime, value))
                 {
                     IsNewOrDirty = true;
+                    this.Start = this.Start.Date + _startTime;
                     UpdateDisplayString();
                 }
                 
@@ -98,6 +100,7 @@ namespace Office365StarterProject.ViewModels
                 if (SetProperty(ref _endTime, value))
                 {
                     IsNewOrDirty = true;
+                    this.End = this.End.Date + _endTime;
                     UpdateDisplayString();
                 }
             }
@@ -156,10 +159,17 @@ namespace Office365StarterProject.ViewModels
 
         private void UpdateDisplayString()
         {
-            DisplayString = String.Format("{0} From: {1} To: {2} Location: {3}",
-                    Subject, Start.ToLocalTime().LocalDateTime.ToString(),
-                    End.ToLocalTime().LocalDateTime.ToString(),
-                    LocationName);
+            DateTimeFormatter dateFormat = new DateTimeFormatter("month.abbreviated day hour minute");
+
+            var startDate = (this.Start == DateTimeOffset.MinValue) ? string.Empty:dateFormat.Format(this.Start);
+            var endDate = (this.End == DateTimeOffset.MinValue) ? string.Empty : dateFormat.Format(this.End);
+
+            DisplayString = String.Format("Subject: {0} Location: {1} Start: {2} End: {3}",
+                    Subject, 
+                    LocationName,
+                    startDate, 
+                    endDate 
+                    );
             DisplayString = (this.IsNewOrDirty) ? DisplayString + " *" : DisplayString;
 
         }
@@ -215,6 +225,7 @@ namespace Office365StarterProject.ViewModels
             {
                 if (!String.IsNullOrEmpty(this.Id))
                 {
+                    LoggingViewModel.Instance.Information = "Updating event ...";
                     operationType = "update";
                     //Send changes to Exchange
                     _serverEventData = await _calenderOperations.UpdateCalendarEventAsync(
@@ -228,9 +239,11 @@ namespace Office365StarterProject.ViewModels
                         this.StartTime,
                         this.EndTime);
                     this.IsNewOrDirty = false;
+                    LoggingViewModel.Instance.Information = "The event was updated in your calendar";
                 }
                 else
                 {
+                    LoggingViewModel.Instance.Information = "Adding event ...";
                     operationType = "save";
                     //Add the event
                     //Send the add request to Exchange service with new event properties
@@ -244,10 +257,11 @@ namespace Office365StarterProject.ViewModels
                         this.StartTime,
                         this.EndTime);
                     this.IsNewOrDirty = false;
+                    LoggingViewModel.Instance.Information = "The event was added to your calendar";
                 }
-                LoggingViewModel.Instance.Information = "Your event is updated in your calendar";
+                
             }
-            catch (Exception )
+            catch (Exception)
             {
                 LoggingViewModel.Instance.Information = string.Format("We could not {0} your calendar event in your calendar", operationType);
             }
@@ -316,25 +330,24 @@ namespace Office365StarterProject.ViewModels
 //Copyright (c) Microsoft Corporation
 //All rights reserved. 
 //
-//MIT License:
-//
-//Permission is hereby granted, free of charge, to any person obtaining
-//a copy of this software and associated documentation files (the
-//""Software""), to deal in the Software without restriction, including
-//without limitation the rights to use, copy, modify, merge, publish,
-//distribute, sublicense, and/or sell copies of the Software, and to
-//permit persons to whom the Software is furnished to do so, subject to
-//the following conditions:
-//
-//The above copyright notice and this permission notice shall be
-//included in all copies or substantial portions of the Software.
-//
-//THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-//EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-//MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-//NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-//LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-//OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-//WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// MIT License:
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// ""Software""), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 //********************************************************* 
