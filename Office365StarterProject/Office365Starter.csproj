@@ -199,7 +199,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Azure.ActiveDirectory.GraphClient">
