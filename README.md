@@ -76,6 +76,8 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
 	- (Users and Groups) – Enable sign-on and read users' profiles  
    6. After clicking OK in the Services Manager dialog box, assemblies for connecting to Office 365 REST APIs will be added to your project.
 
+**Note:** If you see any errors while installing packages during step 6, for example *Unable to find "Microsoft.Azure.ActiveDirectory.GraphClient" version="1.0.21"*, make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive resolves this issue. We'll also work on shortening the folder names in a future update.      
+
 ## Build ##
 
 After you've loaded the solution in Visual Studio, press F5 to build and debug.
@@ -100,7 +102,9 @@ Run the solution and sign in with your organizational account to Office 365.
    - FileSystemItemViewModel.cs  
    - ContactItemViewModel.cs  
 
-## Troubleshooting ##
+## Troubleshooting ##  
+
+If you see any errors while installing packages during step 6, for example *Unable to find "Microsoft.Azure.ActiveDirectory.GraphClient" version="1.0.21"*, make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive resolves this issue. We'll also work on shortening the folder names in a future update.  
 
 You may run into an authentication error after deploying and running if apps do not have the ability to access account information in the [Windows Privacy Settings](http://www.microsoft.com/security/online-privacy/windows.aspx) menu. Set **Let my apps access my name, picture, and other account info** to **On**. This setting can be reset by a Windows Update. 
 
