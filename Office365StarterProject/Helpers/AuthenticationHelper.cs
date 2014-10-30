@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Office365.Discovery;
 using Microsoft.Office365.OAuth;
 using Microsoft.Office365.OutlookServices;
+using Microsoft.Office365.SharePoint.CoreServices;
 using Office365StarterProject.Helpers;
 using System;
 using System.Linq;
@@ -207,6 +208,74 @@ namespace Office365StarterProject
                 return null;
             }
         }
+
+        /// <summary>
+        /// Checks that a SharePoint client is available to the client.
+        /// </summary>
+        /// <returns>The SharePoint Online client.</returns>
+        public static async Task<SharePointClient> EnsureSharePointClientCreatedAsync()
+        {
+            try
+            {
+                AuthenticationContext = new AuthenticationContext(CommonAuthority);
+
+                if (AuthenticationContext.TokenCache.ReadItems().Count() > 0)
+                {
+                    // re-bind the AuthenticationContext to the authority that sourced the token in the cache 
+                    // this is needed for the cache to work when asking for a token from that authority 
+                    // (the common endpoint never triggers cache hits) 
+                    string cachedAuthority = AuthenticationContext.TokenCache.ReadItems().First().Authority;
+                    AuthenticationContext = new AuthenticationContext(cachedAuthority);
+
+                }
+
+                // Create a DiscoveryClient using the discovery endpoint Uri.  
+                DiscoveryClient discovery = new DiscoveryClient(DiscoveryServiceEndpointUri,
+                    async () => await AcquireTokenAsync(AuthenticationContext, DiscoveryResourceId));
+
+                // Now get the capability that you are interested in.
+                CapabilityDiscoveryResult result = await discovery.DiscoverCapabilityAsync("MyFiles");
+
+                var client = new SharePointClient(
+                    result.ServiceEndpointUri,
+                    async () => await AcquireTokenAsync(AuthenticationContext, result.ServiceResourceId));
+
+                return client;
+            }
+            catch (DiscoveryFailedException dfe)
+            {
+                MessageDialogHelper.DisplayException(dfe as Exception);
+
+                // Discovery failed.
+                AuthenticationContext.TokenCache.Clear();
+                return null;
+            }
+            catch (MissingConfigurationValueException mcve)
+            {
+                MessageDialogHelper.DisplayException(mcve);
+
+                // Connected services not added correctly, or permissions not set correctly.
+                AuthenticationContext.TokenCache.Clear();
+                return null;
+            }
+            catch (AuthenticationFailedException afe)
+            {
+                MessageDialogHelper.DisplayException(afe);
+
+                // Failed to authenticate the user
+                AuthenticationContext.TokenCache.Clear();
+                return null;
+
+            }
+            catch (ArgumentException ae)
+            {
+                MessageDialogHelper.DisplayException(ae as Exception);
+                // Argument exception
+                AuthenticationContext.TokenCache.Clear();
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// Signs the user out of the service.

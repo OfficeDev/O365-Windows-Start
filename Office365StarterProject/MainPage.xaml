@@ -1,6 +1,6 @@
 ﻿<!-- Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See full license at the bottom of this file. -->
-
-<Page
+    
+    <Page
     x:Class="Office365StarterProject.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -38,14 +38,14 @@
                        />
                 <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button  Command="{Binding ToggleSignInCommand}" Content="{Binding LogOnCaption}" VerticalAlignment="Bottom" Margin="0,0,15,15" />
-                    <Image Source="{Binding Avatar}" Height="50" Margin="10,0,0,0"/>
+                        <Image Source="{Binding Avatar}" Height="50" Margin="10,0,0,0"/>
                     <StackPanel Margin="20,0,20,15" VerticalAlignment="Bottom">
                         <TextBlock Text="{Binding DisplayName}" Margin="0,10,0,0"/>
                         <TextBlock Text="{Binding JobTitle}" Margin="0,10,0,0"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>
-
+               
         </Border>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -70,7 +70,7 @@
                        Style="{StaticResource SubtitleTextBlockStyle}"
                        >
                 This sample uses the <Bold><Hyperlink NavigateUri="https://visualstudiogallery.msdn.microsoft.com/7e947621-ef93-4de7-93d3-d796c43ba34f" Foreground="{StaticResource HyperLinkBrush}">Microsoft Office 365 API Tools</Hyperlink></Bold> 
-                to illustrate basic operations against the Calendar, and Contacts service endpoints in Office 365. It also demonstrates how to authenticate against multiple Office 365 services in your app, and retrieve user information from the Users and Groups service.
+                to illustrate basic operations against the Files, Calendar and Contacts service endpoints in Office 365. It also demonstrates how to authenticate against multiple Office 365 services in your app, and retrieve user information from the Users and Groups service.
                 <LineBreak/><LineBreak/>To run this sample:
                 <LineBreak/>
                 1. Right-click on the project in the Solution Explorer
@@ -82,6 +82,9 @@
                 4. Set the following permissions for each service:
                 <LineBreak/><LineBreak/>
                 o	(Calendar) – Have full access to users' calendars
+                <LineBreak/>
+                    o	(My Files) – Edit or delete users' files
+                    
                 <LineBreak/>
                 o	(Contacts) – Have full access to users' contacts
                 <LineBreak/>
@@ -102,6 +105,18 @@
                         <TextBlock  Text="calendar"  Style="{StaticResource SubheaderTextBlockStyle}" HorizontalAlignment="Center" Margin="0,0,0,5"/>
                     </StackPanel>
                 </Button>
+                <Button 
+            Name="MyFiles_Button" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center" 
+            Click="MyFiles_Button_Click" 
+            IsEnabled="{Binding Path=SignedIn}"
+            Margin="0,10">
+                    <StackPanel>
+                        <Image Source="../Assets/MyFilesIcon.png" Height="100" Margin="10,0"/>
+                        <TextBlock  Text="files"  Style="{StaticResource SubheaderTextBlockStyle}" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                    </StackPanel>
+                </Button>
                 <Button Name="Contacts_Button" 
                  
                 HorizontalAlignment="Center"  
@@ -115,7 +130,7 @@
                     </StackPanel>
                 </Button>
             </StackPanel>
-
+        
         </Grid>
 
     </Grid>

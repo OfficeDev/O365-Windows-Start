@@ -11,9 +11,9 @@
 
 ## Overview ##
 
-The Office 365 Starter Project sample uses the Office 365 API Tools client libraries to illustrate basic operations against the Calendar and Contacts service endpoints in Office 365.
+The Office 365 Starter Project sample uses the Office 365 API Tools client libraries to illustrate basic operations against the Files, Calendar and Contacts service endpoints in Office 365.
 The sample also demonstrates how to authenticate against multiple Office 365 services in a single app experience, and retrieve user information from the Users and Groups service.
-We'll be adding examples of how to use Files and Email client APIs in updates to this project, so make sure to check back.
+We'll be adding examples of how to use more APIs such as Email when we update this project, so make sure to check back.
 Below are the operations that you can perform with this sample:
 
 Calendar  
@@ -28,6 +28,15 @@ Contacts
   - Update contacts  
   - Delete contacts  
   - Change contact photo  
+
+My Files  
+  -Get files and folders  
+  -Create text files  
+  -Delete files or folders  
+  -Read text file contents (OneDrive)  
+  -Update text file contents  
+  -Download files  
+  -Upload files  
 
 Users and Groups  
   - Get display name  
@@ -63,6 +72,7 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
    5. To register for the services used in this sample, choose the following permissions:  
    	- (Calendar) – Have full access to users’ calendar  
 	- (Contacts) - Have full access to users' contacts  
+	- (My Files) – Edit or delete users’ files  
 	- (Users and Groups) – Enable sign-on and read users' profiles  
    6. After clicking OK in the Services Manager dialog box, assemblies for connecting to Office 365 REST APIs will be added to your project.
 
@@ -76,6 +86,7 @@ Run the solution and sign in with your organizational account to Office 365.
 
 **Helper Classes**  
    - CalendarOperations.cs  
+   - FileOperations.cs  
    - UserOperations.cs  
    - AuthenticationHelper.cs  
    - ContactOperations.cs  
@@ -85,6 +96,8 @@ Run the solution and sign in with your organizational account to Office 365.
    - EventViewModel.cs  
    - UserViewModel.cs  
    - ContactsViewModel.cs  
+   - FilesViewModel.cs  
+   - FileSystemItemViewModel.cs  
    - ContactItemViewModel.cs  
 
 ## Troubleshooting ##

@@ -73,6 +73,11 @@ namespace Office365StarterProject
             this.Frame.Navigate(typeof(Calendar));
         }
 
+        private void MyFiles_Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(MyFiles));
+        }
+
         #region NavigationHelper registration
 
         /// The methods provided in this section are simply used to allow
