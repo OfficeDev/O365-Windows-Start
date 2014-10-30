@@ -30,13 +30,13 @@ Contacts
   - Change contact photo  
 
 My Files  
-  -Get files and folders  
-  -Create text files  
-  -Delete files or folders  
-  -Read text file contents (OneDrive)  
-  -Update text file contents  
-  -Download files  
-  -Upload files  
+  - Get files and folders  
+  - Create text files  
+  - Delete files or folders  
+  - Read text file contents (OneDrive)  
+  - Update text file contents  
+  - Download files  
+  - Upload files  
 
 Users and Groups  
   - Get display name  
@@ -76,7 +76,7 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
 	- (Users and Groups) – Enable sign-on and read users' profiles  
    6. After clicking OK in the Services Manager dialog box, assemblies for connecting to Office 365 REST APIs will be added to your project.
 
-**Note:** If you see any errors while installing packages during step 6, for example *Unable to find "Microsoft.Azure.ActiveDirectory.GraphClient" version="1.0.21"*, make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive resolves this issue. We'll also work on shortening the folder names in a future update.      
+**Note:** If you see any errors while installing packages during step 6, for example, *Unable to find "Microsoft.Azure.ActiveDirectory.GraphClient" version="1.0.21"*, make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive resolves this issue. We'll also work on shortening the folder names in a future update.      
 
 ## Build ##
 
@@ -104,7 +104,7 @@ Run the solution and sign in with your organizational account to Office 365.
 
 ## Troubleshooting ##  
 
-If you see any errors while installing packages, for example *Unable to find "Microsoft.Azure.ActiveDirectory.GraphClient" version="1.0.21"*, make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive resolves this issue. We'll also work on shortening the folder names in a future update.  
+If you see any errors while installing packages, for example, *Unable to find "Microsoft.Azure.ActiveDirectory.GraphClient" version="1.0.21"*, make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive resolves this issue. We'll also work on shortening the folder names in a future update.  
 
 You may run into an authentication error after deploying and running if apps do not have the ability to access account information in the [Windows Privacy Settings](http://www.microsoft.com/security/online-privacy/windows.aspx) menu. Set **Let my apps access my name, picture, and other account info** to **On**. This setting can be reset by a Windows Update. 
 
