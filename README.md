@@ -106,7 +106,7 @@ Run the solution and sign in with your organizational account to Office 365.
 
 ## Troubleshooting ##
 
-You receive an "insufficient privileges" exception when you connect to Office 365 using a normal user, i.e., someone that does nothave elevated privileges and is not a global administrator. Make sure you have set the *Access your organization's directory* permission when you add the connected services.
+You receive an "insufficient privileges" exception when you connect to Office 365 as a normal user, i.e., someone that does not have elevated privileges and is not a global administrator. Make sure you have set the *Access your organization's directory* permission when you add the connected services.
 
 
 You receive errors during package installation, for example, *Unable to find "Microsoft.Azure.ActiveDirectory.GraphClient" version="1.0.21"*. Make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive resolves this issue. We'll also work on shortening the folder names in a future update.  
