@@ -88,7 +88,9 @@
                 <LineBreak/>
                 o	(Contacts) – Have full access to users' contacts
                 <LineBreak/>
-                o	(Users and Groups) – Enable sign-on and read users' profiles
+                o	(Users and Groups) – Enable sign-on and read users' profiles.
+                    <LineBreak/>
+                    o	(Users and Groups) - Access your organization's directory.
                 <LineBreak/><LineBreak/>For more information, see <Bold><Hyperlink NavigateUri="http://aka.ms/o365-apis-start-windows" Foreground="{StaticResource HyperLinkBrush}"  >Office 365 Starter Project Readme </Hyperlink></Bold>.
                 </TextBlock>
             </StackPanel>
