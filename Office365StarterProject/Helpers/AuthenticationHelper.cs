@@ -19,18 +19,17 @@ namespace Office365StarterProject
     /// </summary>
     internal static class AuthenticationHelper
     {
-        // Properties of the native client app
-        // The ClientID is added as a resource in App.xaml when you regiter the app with 
-        // Office 365. As a convenience, we load that value into a variable called ClientID. By doing this, 
-        // whenever you register the app using another account, this variable will be in sync with whatever is in App.xaml.
+        // The ClientID is added as a resource in App.xaml when you register the app with Office 365. 
+        // As a convenience, we load that value into a variable called ClientID. This way the variable 
+        // will always be in sync with whatever client id is added to App.xaml.
         private static readonly string ClientID = App.Current.Resources["ida:ClientID"].ToString();
         private static Uri ReturnUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
 
 
-        // Properties used for communicating with the Windows Azure AD tenant of choice
-        // The AuthroizationUri is added as a resource in App.xaml when you regiter the app with 
+        // Properties used for communicating with your Windows Azure AD tenant.
+        // The AuthorizationUri is added as a resource in App.xaml when you regiter the app with 
         // Office 365. As a convenience, we load that value into a variable called CommonAuthority, adding Common to this Url to signify
-        // multi-tenancy. By doing this, whenever you register the app using another account, this variable will be in sync with whatever is in App.xaml.
+        // multi-tenancy. This way it will always be in sync with whatever value is added to App.xaml.
         private static readonly string CommonAuthority = App.Current.Resources["ida:AuthorizationUri"].ToString() + @"/Common";
         private static readonly Uri DiscoveryServiceEndpointUri = new Uri("https://api.office.com/discovery/v1.0/me/");
         private const string DiscoveryResourceId = "https://api.office.com/discovery/";
@@ -67,8 +66,8 @@ namespace Office365StarterProject
 
                 if (AuthenticationContext.TokenCache.ReadItems().Count() > 0)
                 {
-                    // re-bind the AuthenticationContext to the authority that sourced the token in the cache 
-                    // this is needed for the cache to work when asking a token from that authority 
+                    // Bind the AuthenticationContext to the authority that sourced the token in the cache 
+                    // this is needed for the cache to work when asking for a token from that authority 
                     // (the common endpoint never triggers cache hits) 
                     cacheItem = AuthenticationContext.TokenCache.ReadItems().First();
                     AuthenticationContext = new AuthenticationContext(cacheItem.Authority);
@@ -152,7 +151,7 @@ namespace Office365StarterProject
 
                 if (AuthenticationContext.TokenCache.ReadItems().Count() > 0)
                 {
-                    // re-bind the AuthenticationContext to the authority that sourced the token in the cache 
+                    // Bind the AuthenticationContext to the authority that sourced the token in the cache 
                     // this is needed for the cache to work when asking for a token from that authority 
                     // (the common endpoint never triggers cache hits) 
                     string cachedAuthority = AuthenticationContext.TokenCache.ReadItems().First().Authority;
@@ -221,7 +220,7 @@ namespace Office365StarterProject
 
                 if (AuthenticationContext.TokenCache.ReadItems().Count() > 0)
                 {
-                    // re-bind the AuthenticationContext to the authority that sourced the token in the cache 
+                    // Bind the AuthenticationContext to the authority that sourced the token in the cache 
                     // this is needed for the cache to work when asking for a token from that authority 
                     // (the common endpoint never triggers cache hits) 
                     string cachedAuthority = AuthenticationContext.TokenCache.ReadItems().First().Authority;
@@ -292,14 +291,14 @@ namespace Office365StarterProject
         }
 
         // Get an access token for the given context and resourceId. An attempt is first made to 
-        // acquire the token silently. If that fails, then we try to acquire the token through the Common Consent dialog.
+        // acquire the token silently. If that fails, then we try to acquire the token by prompting the user.
         private static async Task<string> AcquireTokenAsync(AuthenticationContext context, string resourceId)
         {
             string accessToken = null;
 
             try
             {
-                // First, we are going to try to get the access tokn silently using the resourceId that was passed in
+                // First, we are going to try to get the access token silently using the resourceId that was passed in
                 // and the clientId of the application...
                 accessToken = (await context.AcquireTokenSilentAsync(resourceId, ClientID)).AccessToken;
             }
