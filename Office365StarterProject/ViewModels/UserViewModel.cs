@@ -134,20 +134,20 @@ namespace Office365StarterProject.ViewModels
 
         }
 
-        private bool _loggingIn = false;
+        private bool _isBusy = false;
 
         /// <summary>
         /// True when we are in the process of logging in; Otherwise, false.
         /// </summary>
-        public bool LoggingIn
+        public bool IsBusy
         {
             get
             {
-                return _loggingIn;
+                return _isBusy;
             }
             set
             {
-                SetProperty(ref _loggingIn, value);
+                SetProperty(ref _isBusy, value);
             }
 
         }
@@ -167,13 +167,15 @@ namespace Office365StarterProject.ViewModels
                         {
                             if (!SignedIn)
                             {
-                                    this.LoggingIn = true;
+                                    this.IsBusy = true;
                                     await SignInCurrentUserAsync();
-                                    this.LoggingIn = false;
+                                    this.IsBusy = false;
                             }
                             else
                             {
+                                this.IsBusy = true;
                                 await SignOutAsync();
+                                this.IsBusy = false;
                             }
                         },
                         null
@@ -193,7 +195,8 @@ namespace Office365StarterProject.ViewModels
 
             Avatar = _signedOutImage;
 
-            DisplayName = JobTitle = String.Empty;
+            DisplayName = "(not connected)";
+            JobTitle = String.Empty;
 
             SignedIn = false;
             this.LogOnCaption = "Connect to Office 365";
