@@ -79,7 +79,7 @@
                    Style="{StaticResource BaseTextBlockStyle}" Margin="10"
                    >
                 To get started, select the <Bold>Get file and folder list</Bold> button. This will retrieve the first page of items in your default documents <LineBreak />
-             library. Learn about the REST APIs calls made in this application by reading <Bold><Hyperlink NavigateUri="http://msdn.microsoft.com/en-us/library/office/dn605900(v=office.15).aspx" Foreground="{StaticResource HyperLinkBrush}"  >Files REST API in Office 365 APIs</Hyperlink></Bold>.
+             library. Learn about the REST APIs calls made in this application by reading <Bold><Hyperlink NavigateUri="http://msdn.microsoft.com/office/office365/api/files-rest-operations" Foreground="{StaticResource HyperLinkBrush}">Files REST operations</Hyperlink></Bold>.
                
         </TextBlock>
 

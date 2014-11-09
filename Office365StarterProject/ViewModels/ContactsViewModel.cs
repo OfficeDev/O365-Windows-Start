@@ -196,9 +196,7 @@ namespace Office365StarterProject.ViewModels
                         Contacts.Add(new ContactItemViewModel(contact));
                     }
 
-                    LoggingViewModel.Instance.Information = String.Format("{0} contacts loaded. Downloading contact photos ...", Contacts.Count);
-
-                    LoggingViewModel.Instance.Information = string.Empty;
+                    LoggingViewModel.Instance.Information = String.Format("{0} contacts loaded.", Contacts.Count);
                 }
             }
             catch (Exception ex)

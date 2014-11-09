@@ -80,7 +80,7 @@
                    >
                 To get started, select the <Bold>Get contacts</Bold> button. This will get a list of the first page of contacts.<LineBreak/>
                 Learn more about the REST API calls made in this application by reading 
-                <Bold><Hyperlink NavigateUri="http://msdn.microsoft.com/EN-US/library/office/dn792115(v=office.15).aspx" Foreground="{StaticResource HyperLinkBrush}"  >Contacts REST API in Office 365 APIs</Hyperlink></Bold>.
+                <Bold><Hyperlink NavigateUri="http://msdn.microsoft.com/office/office365/api/contacts-rest-operations" Foreground="{StaticResource HyperLinkBrush}"  >Contacts REST operations</Hyperlink></Bold>.
 
         </TextBlock>
 

@@ -78,7 +78,7 @@
                    Style="{StaticResource BaseTextBlockStyle}" Margin="10"
                    >
                 To get started, select the <Bold>Get calendar events</Bold> button to retrieve the first page of calendar events. <LineBreak/> Learn more about the REST API calls made in this application by reading 
-                <Bold><Hyperlink NavigateUri="http://msdn.microsoft.com/en-us/library/office/dn792114(v=office.15).aspx" Foreground="{StaticResource HyperLinkBrush}"  >Calendar REST API in Office 365 APIs</Hyperlink></Bold>.
+                <Bold><Hyperlink NavigateUri="http://msdn.microsoft.com/office/office365/api/calendar-rest-operations" Foreground="{StaticResource HyperLinkBrush}"  >Calendar REST operations</Hyperlink></Bold>.
         </TextBlock>
 
         <!--Core input and output for the calendar operations-->
