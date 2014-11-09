@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See full license at the bottom of this file.
 
 using Office365StarterProject.Common;
+using Office365StarterProject.Helpers;
 using Office365StarterProject.ViewModels;
 using Office365StarterProject.Views;
 using System;
@@ -92,6 +93,12 @@ namespace Office365StarterProject
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             navigationHelper.OnNavigatedTo(e);
+
+            // Developer code - if you haven't registered the app yet, we warn you. 
+            if (!App.Current.Resources.ContainsKey("ida:ClientID"))
+            {
+                MessageDialogHelper.ShowDialogAsync("To run this sample, you must register it with Office 365. You can do that through the 'Add | Connected services' dialog in Visual Studio. See Readme for more info", "Oops - App not registered with Office 365");
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

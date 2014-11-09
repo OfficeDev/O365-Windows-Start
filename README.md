@@ -1,4 +1,4 @@
-﻿# Office 365 Starter Project for Windows Store App #
+# Office 365 Starter Project for Windows Store App #
 
 **Table of Contents**
 
@@ -104,14 +104,26 @@ Run the solution and sign in with your organizational account to Office 365.
    - FileSystemItemViewModel.cs  
    - ContactItemViewModel.cs  
 
+## Known issues ##
+
+
+
+- When signed in with a standard, non-admin, Office 365 user you receive *Access denied* errors using the Files API. A fix is being rolled out soon to address this issue. To continue exploring the Files API you currently have to be signed in as an admin or enable Sites permissions for the sample. 
+
 ## Troubleshooting ##
 
-You receive an "insufficient privileges" exception when you connect to Office 365 as a normal user, i.e., someone that does not have elevated privileges and is not a global administrator. Make sure you have set the *Access your organization's directory* permission when you add the connected services.
 
 
-You receive errors during package installation, for example, *Unable to find "Microsoft.Azure.ActiveDirectory.GraphClient" version="1.0.21"*. Make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive resolves this issue. We'll also work on shortening the folder names in a future update.  
+- You receive an "insufficient privileges" exception when you connect to Office 365 as a normal user, i.e., someone that does not have elevated privileges and is not a global administrator. Make sure you have set the *Access your organization's directory* permission when you add the connected services.
 
-You may run into an authentication error after deploying and running if apps do not have the ability to access account information in the [Windows Privacy Settings](http://www.microsoft.com/security/online-privacy/windows.aspx) menu. Set **Let my apps access my name, picture, and other account info** to **On**. This setting can be reset by a Windows Update. 
+
+
+
+- You receive errors during package installation, for example, *Unable to find "Microsoft.Azure.ActiveDirectory.GraphClient" version="1.0.21"*. Make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive resolves this issue. We'll also work on shortening the folder names in a future update.  
+
+
+
+- You may run into an authentication error after deploying and running if apps do not have the ability to access account information in the [Windows Privacy Settings](http://www.microsoft.com/security/online-privacy/windows.aspx) menu. Set **Let my apps access my name, picture, and other account info** to **On**. This setting can be reset by a Windows Update. 
 
 ## Copyright ##
 
