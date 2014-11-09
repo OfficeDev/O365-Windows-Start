@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See full license at the bottom of this file.
 
+using Office365StarterProject.ViewModels;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -15,6 +16,21 @@ namespace Office365StarterProject
     /// </summary>
     sealed partial class App : Application
     {
+        /// <summary>
+        /// Represents the current user of the sample. 
+        /// </summary>
+        private static UserViewModel _currentUser;
+        public static UserViewModel CurrentUser
+        {
+            get
+            {
+                if (_currentUser == null)
+                {
+                    _currentUser = new UserViewModel();
+                }
+                return _currentUser;
+            }
+        }
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().

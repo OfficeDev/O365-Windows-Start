@@ -17,7 +17,6 @@ namespace Office365StarterProject
     public sealed partial class MainPage : Page
     {
         private NavigationHelper navigationHelper;
-        private UserViewModel _userViewModel = null;
 
         /// <summary>
         /// NavigationHelper is used on each page to aid in navigation and 
@@ -34,39 +33,11 @@ namespace Office365StarterProject
             this.InitializeComponent();
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += navigationHelper_LoadState;
-            this.navigationHelper.SaveState += navigationHelper_SaveState;
-            
         }
 
-        private async void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            try
-            {
-                bool signedIn = false;
-                _userViewModel = new UserViewModel();
-
-                if (e.PageState != null && e.PageState.ContainsKey("signInStatus"))
-                {
-                    signedIn = (bool)e.PageState["signInStatus"];
-                }
-
-                this.DataContext = new UserViewModel();
-                if (signedIn)
-                    await _userViewModel.SignInCurrentUserAsync();
-
-                this.DataContext = _userViewModel;
-            }
-            catch (Exception)
-            { 
-
-            }
-
-        }
-
-        void navigationHelper_SaveState(object sender, SaveStateEventArgs e)
-        {
-            if (_userViewModel != null)
-                e.PageState["signInStatus"] = _userViewModel.SignedIn;
+            this.DataContext = App.CurrentUser;
         }
 
         private void Calendar_Button_Click(object sender, RoutedEventArgs e)
