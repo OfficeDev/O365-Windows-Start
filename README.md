@@ -48,11 +48,11 @@ Users and Groups
 <a name="prerequisites"></a>
 ## Prerequisites and Configuration ##
 
-This sample requires the following:
-  - Visual Studio 2013 with Update 3.
-  - [Office 365 API Tools version 1.2.41027.2](https://visualstudiogallery.msdn.microsoft.com/7e947621-ef93-4de7-93d3-d796c43ba34f).
-  - An [Office 365 developer site](https://portal.office.com/Signup/Signup.aspx?OfferId=6881A1CB-F4EB-4db3-9F18-388898DAF510&DL=DEVELOPERPACK&ali=1).
-  - At least one sign-on to OneDrive for Business via the web browser.
+This sample requires the following:  
+  - Visual Studio 2013 with Update 3.  
+  - [Office 365 API Tools version 1.2.41027.2](https://visualstudiogallery.msdn.microsoft.com/a15b85e6-69a7-4fdf-adda-a38066bb5155).  
+  - An [Office 365 developer site](https://portal.office.com/Signup/Signup.aspx?OfferId=6881A1CB-F4EB-4db3-9F18-388898DAF510&DL=DEVELOPERPACK&ali=1).  
+  - To use the Files part of this project, OneDrive for Business must be setup on your tenant, which happens the first time you sign-on to OneDrive for Business via the web browser.
 
 ###Configure the sample
 
