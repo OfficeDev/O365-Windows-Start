@@ -69,7 +69,7 @@
                        TextWrapping="WrapWholeWords"
                        Style="{StaticResource SubtitleTextBlockStyle}"
                        >
-                This sample uses the <Bold><Hyperlink NavigateUri="https://visualstudiogallery.msdn.microsoft.com/7e947621-ef93-4de7-93d3-d796c43ba34f" Foreground="{StaticResource HyperLinkBrush}">Microsoft Office 365 API Tools</Hyperlink></Bold> 
+                This sample uses the <Bold><Hyperlink NavigateUri="https://visualstudiogallery.msdn.microsoft.com/a15b85e6-69a7-4fdf-adda-a38066bb5155" Foreground="{StaticResource HyperLinkBrush}">Microsoft Office 365 API Tools for Visual Studio 2013</Hyperlink></Bold> 
                 to illustrate basic operations against the Files, Calendar and Contacts service endpoints in Office 365. It also demonstrates how to authenticate against multiple Office 365 services in your app, and retrieve user information from the Users and Groups service.
                 <LineBreak/><LineBreak/>To run this sample:
                 <LineBreak/>
