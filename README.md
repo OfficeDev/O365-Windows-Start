@@ -121,7 +121,7 @@ Run the solution and sign in with your organizational account to Office 365.
 
 
 
-- When signed in with a standard, non-admin, Office 365 user you receive *Access denied* errors using the Files API. A fix is being rolled out soon to address this issue. To continue exploring the Files API you currently have to be signed in as an admin or enable Sites permissions for the sample. 
+- None at the moment, but do let us know if you find any. We're listening. 
 
 ## Troubleshooting ##
 
