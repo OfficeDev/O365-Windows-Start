@@ -208,7 +208,7 @@ namespace Office365StarterProject.ViewModels
         /// <returns></returns>
         public async Task SignInCurrentUserAsync()
         {
-            _currentUser = await _userOperations.AuthenticateCurrentUserAsync();
+            _currentUser = await _userOperations.GetCurrentUserAsync();
 
             if (_currentUser != null)
             {

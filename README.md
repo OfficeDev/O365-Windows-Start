@@ -3,6 +3,7 @@
 **Table of Contents**
 
 - [Overview](#overview)
+- [Change History](#changehistory)
 - [Prerequisites and Configuration](#prerequisites)
 - [Build](#build)
 - [Project Files of Interest](#project)
@@ -14,6 +15,7 @@
 The Office 365 Starter Project sample uses the Office 365 API Tools client libraries to illustrate basic operations against the Files, Calendar and Contacts service endpoints in Office 365.
 The sample also demonstrates how to authenticate against multiple Office 365 services in a single app experience, and retrieve user information from the Users and Groups service.
 We'll be adding examples of how to use more APIs such as Email when we update this project, so make sure to check back.
+
 Below are the operations that you can perform with this sample:
 
 Calendar  
@@ -45,7 +47,18 @@ Users and Groups
   - Get user ID  
   - Check signed in/out state  
 
+<a name="changehistory"></a>
+## Change History ##
+December 17, 2014:
+
+- Simplified authentication flow and client creation in AuthenticationHelper.cs file.
+
+- Added cache for the information from the discovery service so that the app doesn't query the service more than once.
+
+- Added support for corporate intranets and company accounts. The `UseCorporateNetwork` property of the `AuthenticationContext` object is now set to true. The project also now includes declarations for the Enterprise Authentication, Private Networks, and Shared User Certificates capabilities. See [App capability declarations (Windows Runtime apps)](http://msdn.microsoft.com/en-us/library/windows/apps/hh464936.aspx) for more information.
+
 <a name="prerequisites"></a>
+
 ## Prerequisites and Configuration ##
 
 This sample requires the following:  
@@ -124,6 +137,7 @@ Run the solution and sign in with your organizational account to Office 365.
 
 
 - You may run into an authentication error after deploying and running if apps do not have the ability to access account information in the [Windows Privacy Settings](http://www.microsoft.com/security/online-privacy/windows.aspx) menu. Set **Let my apps access my name, picture, and other account info** to **On**. This setting can be reset by a Windows Update. 
+
 
 ## Copyright ##
 

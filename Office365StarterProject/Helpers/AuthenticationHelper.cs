@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
+using Windows.Storage;
 
 namespace Office365StarterProject
 {
@@ -23,30 +24,95 @@ namespace Office365StarterProject
         // As a convenience, we load that value into a variable called ClientID. This way the variable 
         // will always be in sync with whatever client id is added to App.xaml.
         private static readonly string ClientID = App.Current.Resources["ida:ClientID"].ToString();
-        private static Uri ReturnUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
+        private static Uri _returnUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
 
 
         // Properties used for communicating with your Windows Azure AD tenant.
         // The AuthorizationUri is added as a resource in App.xaml when you regiter the app with 
-        // Office 365. As a convenience, we load that value into a variable called CommonAuthority, adding Common to this Url to signify
+        // Office 365. As a convenience, we load that value into a variable called _commonAuthority, adding _common to this Url to signify
         // multi-tenancy. This way it will always be in sync with whatever value is added to App.xaml.
         private static readonly string CommonAuthority = App.Current.Resources["ida:AuthorizationUri"].ToString() + @"/Common";
         private static readonly Uri DiscoveryServiceEndpointUri = new Uri("https://api.office.com/discovery/v1.0/me/");
         private const string DiscoveryResourceId = "https://api.office.com/discovery/";
 
-        public static AuthenticationContext AuthenticationContext { get; set; }
+        //Static variables store the clients so that we don't have to create them more than once.
+        private static ActiveDirectoryClient _graphClient = null;
+        private static OutlookServicesClient _outlookClient = null;
+        private static SharePointClient _sharePointClient = null;
 
-        static string _loggedInUser;
-        /// <summary>
-        /// Gets the logged in user.
-        /// </summary>
-        static internal String LoggedInUser
+        private static ApplicationDataContainer _settings = ApplicationData.Current.LocalSettings;
+
+        //Property for storing and returning the authority used by the last authentication.
+        //This value is populated when the user connects to the service and made null when the user signs out.
+        private static string LastAuthority
         {
             get
             {
-                return _loggedInUser;
+                if (_settings.Values.ContainsKey("LastAuthority") && _settings.Values["LastAuthority"] != null)
+                {
+                    return _settings.Values["LastAuthority"].ToString();
+                }
+                else
+                {
+                    return string.Empty;
+                }
+
+            }
+
+            set
+            {
+                _settings.Values["LastAuthority"] = value;
             }
         }
+        
+        //Property for storing the tenant id so that we can pass it to the ActiveDirectoryClient constructor.
+        //This value is populated when the user connects to the service and made null when the user signs out.
+        static internal string TenantId
+        {
+            get
+            {
+                if (_settings.Values.ContainsKey("TenantId") && _settings.Values["TenantId"] != null)
+                {
+                    return _settings.Values["TenantId"].ToString();
+                }
+                else
+                {
+                    return string.Empty;
+                }
+
+            }
+
+            set
+            {
+                _settings.Values["TenantId"] = value;
+            }
+        }
+
+        // Property for storing the logged-in user so that we can display user properties later.
+        //This value is populated when the user connects to the service and made null when the user signs out.
+        static internal string LoggedInUser
+        {
+            get
+            {
+                if (_settings.Values.ContainsKey("LoggedInUser") && _settings.Values["LoggedInUser"] != null)
+                {
+                    return _settings.Values["LoggedInUser"].ToString();
+                }
+                else
+                {
+                    return string.Empty;
+                }
+
+            }
+
+            set
+            {
+                _settings.Values["LoggedInUser"] = value;
+            }
+        }
+
+        //Property for storing the authentication context.
+        public static AuthenticationContext _authenticationContext { get; set; }
 
         /// <summary>
         /// Checks that a Graph client is available.
@@ -54,29 +120,41 @@ namespace Office365StarterProject
         /// <returns>The Graph client.</returns>
         public static async Task<ActiveDirectoryClient> EnsureGraphClientCreatedAsync()
         {
-            // Active Directory service endpoints
-            const string AadServiceResourceId = "https://graph.windows.net/";
-            Uri AadServiceEndpointUri = new Uri("https://graph.windows.net/");
-
-            try
+            //Check to see if this client has already been created. If so, return it. Otherwise, create a new one.
+            if (_graphClient != null)
             {
-                AuthenticationContext = new AuthenticationContext(CommonAuthority);
+                return _graphClient;
+            }
+            else
+            {
+                // Active Directory service endpoints
+                const string AadServiceResourceId = "https://graph.windows.net/";
+                Uri AadServiceEndpointUri = new Uri("https://graph.windows.net/");
 
-                TokenCacheItem cacheItem = null;
-
-                if (AuthenticationContext.TokenCache.ReadItems().Count() > 0)
+                try
                 {
-                    // Bind the AuthenticationContext to the authority that sourced the token in the cache 
-                    // this is needed for the cache to work when asking for a token from that authority 
-                    // (the common endpoint never triggers cache hits) 
-                    cacheItem = AuthenticationContext.TokenCache.ReadItems().First();
-                    AuthenticationContext = new AuthenticationContext(cacheItem.Authority);
+                    //First, look for the authority used during the last authentication.
+                    //If that value is not populated, use _commonAuthority.
+                    string authority = null;
+                    if (String.IsNullOrEmpty(LastAuthority))
+                    {
+                        authority = CommonAuthority;
+                    }
+                    else
+                    {
+                        authority = LastAuthority;
+                    }
 
-                }
-                else
-                {
-                    // Nothing was found in the cache, so let's acquire a token.
-                    var token = await AcquireTokenAsync(AuthenticationContext, AadServiceResourceId);
+                    // Create an AuthenticationContext using this authority.
+                    _authenticationContext = new AuthenticationContext(authority);
+
+                    // Set the value of _authenticationContext.UseCorporateNetwork to true so that you 
+                    // can use this app inside a corporate intranet. If the value of UseCorporateNetwork 
+                    // is true, you also need to add the Enterprise Authentication, Private Networks, and
+                    // Shared User Certificates capabilities in the Package.appxmanifest file.
+                    _authenticationContext.UseCorporateNetwork = true;
+
+                    var token = await GetTokenHelperAsync(_authenticationContext, AadServiceResourceId);
 
                     // Check the token
                     if (String.IsNullOrEmpty(token))
@@ -86,56 +164,25 @@ namespace Office365StarterProject
                     }
                     else
                     {
-                        // If a token was acquired, the TokenCache will contain a TokenCacheItem containing
-                        // all the details of the authorization.
-                        cacheItem = AuthenticationContext.TokenCache.ReadItems().First();
+                        // Create our ActiveDirectory client.
+                        _graphClient = new ActiveDirectoryClient(
+                            new Uri(AadServiceEndpointUri, TenantId),
+                            async () => await GetTokenHelperAsync(_authenticationContext, AadServiceResourceId));
+
+                        return _graphClient;
                     }
+
+
                 }
 
-                // Store the Id of the logged-in user so that we can retrieve more user info later.
-                _loggedInUser = cacheItem.UniqueId;
-                
-                // Create our ActiveDirectory client.
-                var client = new ActiveDirectoryClient(
-                    new Uri(AadServiceEndpointUri, cacheItem.TenantId),
-                    async () => await AcquireTokenAsync(AuthenticationContext, AadServiceResourceId));
+                catch (Exception e)
+                {
+                    MessageDialogHelper.DisplayException(e as Exception);
 
-                return client;
-            }
-            // The following is a list of all exceptions you should consider handling in your app.
-            // In the case of this sample, the exceptions are handled by returning null upstream. 
-            catch (DiscoveryFailedException dfe)
-            {
-                MessageDialogHelper.DisplayException(dfe as Exception);
-
-                // Discovery failed.
-                AuthenticationContext.TokenCache.Clear();
-                return null;
-            }
-            catch (MissingConfigurationValueException mcve)
-            {
-                MessageDialogHelper.DisplayException(mcve);
-
-                // Connected services not added correctly, or permissions not set correctly.
-                AuthenticationContext.TokenCache.Clear();
-                return null;
-            }
-            catch (AuthenticationFailedException afe)
-            {
-                MessageDialogHelper.DisplayException(afe);
-
-                // Failed to authenticate the user
-                AuthenticationContext.TokenCache.Clear();
-                return null;
-
-            }
-            catch (ArgumentException ae)
-            {
-                MessageDialogHelper.DisplayException(ae as Exception);
-
-                // Argument exception
-                AuthenticationContext.TokenCache.Clear();
-                return null;
+                    // Argument exception
+                    _authenticationContext.TokenCache.Clear();
+                    return null;
+                }
             }
         }
 
@@ -145,66 +192,58 @@ namespace Office365StarterProject
         /// <returns>The OutlookServicesClient object. </returns>
         public static async Task<OutlookServicesClient> EnsureOutlookClientCreatedAsync()
         {
-            try
+            //Check to see if this client has already been created. If so, return it. Otherwise, create a new one.
+            if (_outlookClient != null)
             {
-                AuthenticationContext = new AuthenticationContext(CommonAuthority);
-
-                if (AuthenticationContext.TokenCache.ReadItems().Count() > 0)
+                return _outlookClient;
+            }
+            else
+            {
+                try
                 {
-                    // Bind the AuthenticationContext to the authority that sourced the token in the cache 
-                    // this is needed for the cache to work when asking for a token from that authority 
-                    // (the common endpoint never triggers cache hits) 
-                    string cachedAuthority = AuthenticationContext.TokenCache.ReadItems().First().Authority;
-                    AuthenticationContext = new AuthenticationContext(cachedAuthority);
+                    // Now get the capability that you are interested in.
+                    CapabilityDiscoveryResult result = await GetDiscoveryCapabilityResultAsync("Calendar");
+
+                    _outlookClient = new OutlookServicesClient(
+                        result.ServiceEndpointUri,
+                        async () => await GetTokenHelperAsync(_authenticationContext, result.ServiceResourceId));
+
+                    return _outlookClient;
+                }
+                // The following is a list of all exceptions you should consider handling in your app.
+                // In the case of this sample, the exceptions are handled by returning null upstream. 
+                catch (DiscoveryFailedException dfe)
+                {
+                    MessageDialogHelper.DisplayException(dfe as Exception);
+
+                    // Discovery failed.
+                    _authenticationContext.TokenCache.Clear();
+                    return null;
+                }
+                catch (MissingConfigurationValueException mcve)
+                {
+                    MessageDialogHelper.DisplayException(mcve);
+
+                    // Connected services not added correctly, or permissions not set correctly.
+                    _authenticationContext.TokenCache.Clear();
+                    return null;
+                }
+                catch (AuthenticationFailedException afe)
+                {
+                    MessageDialogHelper.DisplayException(afe);
+
+                    // Failed to authenticate the user
+                    _authenticationContext.TokenCache.Clear();
+                    return null;
 
                 }
-
-                // Create a DiscoveryClient using the discovery endpoint Uri.  
-                DiscoveryClient discovery = new DiscoveryClient(DiscoveryServiceEndpointUri,
-                    async () => await AcquireTokenAsync(AuthenticationContext, DiscoveryResourceId));
-
-                // Now get the capability that you are interested in.
-                CapabilityDiscoveryResult result = await discovery.DiscoverCapabilityAsync("Mail");
-
-                var client = new OutlookServicesClient(
-                    result.ServiceEndpointUri,
-                    async () => await AcquireTokenAsync(AuthenticationContext, result.ServiceResourceId));
-
-                return client;
-            }
-            // The following is a list of all exceptions you should consider handling in your app.
-            // In the case of this sample, the exceptions are handled by returning null upstream. 
-            catch (DiscoveryFailedException dfe)
-            {
-                MessageDialogHelper.DisplayException(dfe as Exception);
-
-                // Discovery failed.
-                AuthenticationContext.TokenCache.Clear();
-                return null;
-            }
-            catch (MissingConfigurationValueException mcve)
-            {
-                MessageDialogHelper.DisplayException(mcve);
-
-                // Connected services not added correctly, or permissions not set correctly.
-                AuthenticationContext.TokenCache.Clear();
-                return null;
-            }
-            catch (AuthenticationFailedException afe)
-            {
-                MessageDialogHelper.DisplayException(afe);
-
-                // Failed to authenticate the user
-                AuthenticationContext.TokenCache.Clear();
-                return null;
-
-            }
-            catch (ArgumentException ae)
-            {
-                MessageDialogHelper.DisplayException(ae as Exception);
-                // Argument exception
-                AuthenticationContext.TokenCache.Clear();
-                return null;
+                catch (ArgumentException ae)
+                {
+                    MessageDialogHelper.DisplayException(ae as Exception);
+                    // Argument exception
+                    _authenticationContext.TokenCache.Clear();
+                    return null;
+                }
             }
         }
 
@@ -214,64 +253,57 @@ namespace Office365StarterProject
         /// <returns>The SharePoint Online client.</returns>
         public static async Task<SharePointClient> EnsureSharePointClientCreatedAsync()
         {
-            try
+            //Check to see if this client has already been created. If so, return it. Otherwise, create a new one.
+            if (_sharePointClient != null)
             {
-                AuthenticationContext = new AuthenticationContext(CommonAuthority);
-
-                if (AuthenticationContext.TokenCache.ReadItems().Count() > 0)
+                return _sharePointClient;
+            }
+            else
+            {
+                try
                 {
-                    // Bind the AuthenticationContext to the authority that sourced the token in the cache 
-                    // this is needed for the cache to work when asking for a token from that authority 
-                    // (the common endpoint never triggers cache hits) 
-                    string cachedAuthority = AuthenticationContext.TokenCache.ReadItems().First().Authority;
-                    AuthenticationContext = new AuthenticationContext(cachedAuthority);
+
+                    // Now get the capability that you are interested in.
+                    CapabilityDiscoveryResult result = await GetDiscoveryCapabilityResultAsync("MyFiles");
+
+                    _sharePointClient = new SharePointClient(
+                        result.ServiceEndpointUri,
+                        async () => await GetTokenHelperAsync(_authenticationContext, result.ServiceResourceId));
+
+                    return _sharePointClient;
+                }
+                catch (DiscoveryFailedException dfe)
+                {
+                    MessageDialogHelper.DisplayException(dfe as Exception);
+
+                    // Discovery failed.
+                    _authenticationContext.TokenCache.Clear();
+                    return null;
+                }
+                catch (MissingConfigurationValueException mcve)
+                {
+                    MessageDialogHelper.DisplayException(mcve);
+
+                    // Connected services not added correctly, or permissions not set correctly.
+                    _authenticationContext.TokenCache.Clear();
+                    return null;
+                }
+                catch (AuthenticationFailedException afe)
+                {
+                    MessageDialogHelper.DisplayException(afe);
+
+                    // Failed to authenticate the user
+                    _authenticationContext.TokenCache.Clear();
+                    return null;
 
                 }
-
-                // Create a DiscoveryClient using the discovery endpoint Uri.  
-                DiscoveryClient discovery = new DiscoveryClient(DiscoveryServiceEndpointUri,
-                    async () => await AcquireTokenAsync(AuthenticationContext, DiscoveryResourceId));
-
-                // Now get the capability that you are interested in.
-                CapabilityDiscoveryResult result = await discovery.DiscoverCapabilityAsync("MyFiles");
-
-                var client = new SharePointClient(
-                    result.ServiceEndpointUri,
-                    async () => await AcquireTokenAsync(AuthenticationContext, result.ServiceResourceId));
-
-                return client;
-            }
-            catch (DiscoveryFailedException dfe)
-            {
-                MessageDialogHelper.DisplayException(dfe as Exception);
-
-                // Discovery failed.
-                AuthenticationContext.TokenCache.Clear();
-                return null;
-            }
-            catch (MissingConfigurationValueException mcve)
-            {
-                MessageDialogHelper.DisplayException(mcve);
-
-                // Connected services not added correctly, or permissions not set correctly.
-                AuthenticationContext.TokenCache.Clear();
-                return null;
-            }
-            catch (AuthenticationFailedException afe)
-            {
-                MessageDialogHelper.DisplayException(afe);
-
-                // Failed to authenticate the user
-                AuthenticationContext.TokenCache.Clear();
-                return null;
-
-            }
-            catch (ArgumentException ae)
-            {
-                MessageDialogHelper.DisplayException(ae as Exception);
-                // Argument exception
-                AuthenticationContext.TokenCache.Clear();
-                return null;
+                catch (ArgumentException ae)
+                {
+                    MessageDialogHelper.DisplayException(ae as Exception);
+                    // Argument exception
+                    _authenticationContext.TokenCache.Clear();
+                    return null;
+                }
             }
         }
 
@@ -281,39 +313,89 @@ namespace Office365StarterProject
         /// </summary>
         public static async Task SignOutAsync()
         {
-            if (string.IsNullOrEmpty(_loggedInUser))
+            if (string.IsNullOrEmpty(LoggedInUser))
             {
                 return;
             }
 
-            await AuthenticationContext.LogoutAsync(_loggedInUser);
-            AuthenticationContext.TokenCache.Clear();
+            await _authenticationContext.LogoutAsync(LoggedInUser);
+            _authenticationContext.TokenCache.Clear();
+            //Clean up all existing clients
+            _graphClient = null;
+            _outlookClient = null;
+            _sharePointClient = null;
+            //Clear stored values from last authentication. Leave value for LoggedInUser so that we can try again if logout fails.
+            _settings.Values["TenantId"] = null;
+            _settings.Values["LastAuthority"] = null;
+
         }
 
         // Get an access token for the given context and resourceId. An attempt is first made to 
         // acquire the token silently. If that fails, then we try to acquire the token by prompting the user.
-        private static async Task<string> AcquireTokenAsync(AuthenticationContext context, string resourceId)
+        private static async Task<string> GetTokenHelperAsync(AuthenticationContext context, string resourceId)
         {
             string accessToken = null;
+            AuthenticationResult result = null;
 
-            try
+            result = await context.AcquireTokenAsync(resourceId, ClientID, _returnUri);
+
+            if (result.Status == AuthenticationStatus.Success)
             {
-                // First, we are going to try to get the access token silently using the resourceId that was passed in
-                // and the clientId of the application...
-                accessToken = (await context.AcquireTokenSilentAsync(resourceId, ClientID)).AccessToken;
+                accessToken = result.AccessToken;
+                //Store values for logged-in user, tenant id, and authority, so that
+                //they can be re-used if the user re-opens the app without disconnecting.
+                _settings.Values["LoggedInUser"] = result.UserInfo.UniqueId;
+                _settings.Values["TenantId"] = result.TenantId;
+                _settings.Values["LastAuthority"] = context.Authority;
+
+                return accessToken;
             }
-            catch (Exception)
+            else
             {
-                // We were unable to acquire the AccessToken silently. So, we'll try again with full
-                // prompting. 
-                accessToken = null;
+                return null;
+            }
+        }
 
+        //Discovery service methods
+
+        public static async Task<DiscoveryServiceCache> CreateAndSaveDiscoveryServiceCacheAsync()
+        {
+            DiscoveryServiceCache discoveryCache = null;
+
+            var discoveryClient = new DiscoveryClient(DiscoveryServiceEndpointUri,
+                                async () => await GetTokenHelperAsync(_authenticationContext, DiscoveryResourceId));
+
+            var discoveryCapabilityResult = await discoveryClient.DiscoverCapabilitiesAsync();
+
+            discoveryCache = await DiscoveryServiceCache.CreateAndSaveAsync(LoggedInUser, discoveryCapabilityResult);
+
+            return discoveryCache;
+        }
+
+        public static async Task<CapabilityDiscoveryResult> GetDiscoveryCapabilityResultAsync(string capability)
+        {
+            var cacheResult = await DiscoveryServiceCache.LoadAsync();
+
+            CapabilityDiscoveryResult discoveryCapabilityResult = null;
+
+            if (cacheResult != null && cacheResult.DiscoveryInfoForServices.ContainsKey(capability))
+            {
+                discoveryCapabilityResult = cacheResult.DiscoveryInfoForServices[capability];
+
+                if (LoggedInUser != cacheResult.UserId)
+                {
+                    // cache is for another user
+                    cacheResult = null;
+                }
             }
 
-            if (accessToken == "" || accessToken == null)
-                accessToken = (await context.AcquireTokenAsync(resourceId, ClientID, ReturnUri)).AccessToken;
+            if (cacheResult == null)
+            {
+                cacheResult = await CreateAndSaveDiscoveryServiceCacheAsync();
+                discoveryCapabilityResult = cacheResult.DiscoveryInfoForServices[capability];
+            }
 
-            return accessToken;
+            return discoveryCapabilityResult;
         }
 
     }

@@ -20,26 +20,34 @@ namespace Office365StarterProject.Helpers
         /// Authenticates and signs in the user. 
         /// </summary>
         /// <returns></returns>
-        public async Task<IUser> AuthenticateCurrentUserAsync()
+        public async Task<IUser> GetCurrentUserAsync()
         {
-            IUser currentUser = null;
-
-            // Make sure we have a reference to the Azure Active Directory client
-            var aadClient = await AuthenticationHelper.EnsureGraphClientCreatedAsync();
-
-            if (aadClient != null)
+            try
             {
-                // This results in a call to the service.
-                currentUser = await (aadClient.Users
-                                            .Where(i => i.ObjectId == AuthenticationHelper.LoggedInUser)
-                                            .ExecuteSingleAsync());
+                IUser currentUser = null;
 
-                if (currentUser != null)
-                    _userEmail = currentUser.Mail;
+                // Make sure we have a reference to the Azure Active Directory client
+                var aadClient = await AuthenticationHelper.EnsureGraphClientCreatedAsync();
 
+                if (aadClient != null)
+                {
+                    // This results in a call to the service.
+                    currentUser = await (aadClient.Users
+                                                .Where(i => i.ObjectId == AuthenticationHelper.LoggedInUser)
+                                                .ExecuteSingleAsync());
+
+                    if (currentUser != null)
+                        _userEmail = currentUser.Mail;
+
+                }
+
+                return currentUser;
             }
-
-            return currentUser;
+            catch (ODataErrorException ode)
+            {
+                MessageDialogHelper.DisplayException(ode);
+                return null;
+            }
         }
 
         /// <summary>
