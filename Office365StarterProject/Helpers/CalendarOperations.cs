@@ -15,15 +15,18 @@ namespace Office365StarterProject.Helpers
     /// </summary>
     internal class CalendarOperations
     {
+        private string _calendarCapability = ServiceCapabilities.Calendar.ToString();
+
         /// <summary>
         /// Gets the details of an event.
         /// </summary>
         /// <param name="eventId">string. The unique identifier of an event selected in the UI.</param>
         /// <returns>A calendar event.</returns>
+
         internal async Task<IEvent> GetEventDetailsAsync(string eventId)
         {
             // Make sure we have a reference to the calendar client
-            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
+            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_calendarCapability);
 
             // This results in a call to the service.
             return await exchangeClient.Me.Calendar.Events.GetById(eventId).ExecuteAsync();
@@ -36,7 +39,7 @@ namespace Office365StarterProject.Helpers
         internal async Task<List<EventViewModel>> GetCalendarEventsAsync()
         {
             // Make sure we have a reference to the Exchange client
-            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
+            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_calendarCapability);
 
             List<EventViewModel> returnResults = new List<EventViewModel>();
 
@@ -104,7 +107,7 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the calendar client
-                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
+                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_calendarCapability);
 
                 // This results in a call to the service.
                 await exchangeClient.Me.Events.AddEventAsync(newEvent);
@@ -141,7 +144,7 @@ namespace Office365StarterProject.Helpers
             TimeSpan endTime)
         {
             // Make sure we have a reference to the Exchange client
-            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
+            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_calendarCapability);
 
             var eventToUpdate = await exchangeClient.Me.Calendar.Events.GetById(selectedEventId).ExecuteAsync();
             eventToUpdate.Attendees.Clear();
@@ -198,7 +201,7 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the Exchange client
-                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
+                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_calendarCapability);
 
                 // Get the event to be removed from the Exchange service. This results in a call to the service.
                 var eventToDelete = await exchangeClient.Me.Calendar.Events.GetById(selectedEventId).ExecuteAsync();
@@ -217,14 +220,13 @@ namespace Office365StarterProject.Helpers
             return false;
         }
 
-
         /// <summary>
         /// Builds a semi-colon delimted list of attendee email addresses from
         /// the Attendee collection of a calendar event
         /// </summary>
         /// <param name="attendeeList">IList[Attendee] attendeeList</param>
         /// <returns></returns>
-        internal  string BuildAttendeeList(IList<Attendee> attendeeList)
+        internal string BuildAttendeeList(IList<Attendee> attendeeList)
         {
             StringBuilder attendeeListBuilder = new StringBuilder();
             foreach (Attendee attendee in attendeeList)

@@ -119,6 +119,7 @@
     <Compile Include="Helpers\FileOperations.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Helpers\MailOperations.cs" />
     <Compile Include="ViewModels\ContactItemViewModel.cs" />
     <Compile Include="ViewModels\ContactsViewModel.cs" />
     <Compile Include="ViewModels\FilesViewModel.cs">
@@ -129,6 +130,8 @@
     </Compile>
     <Compile Include="ViewModels\LoggingViewModel.cs" />
     <Compile Include="Helpers\UserOperations.cs" />
+    <Compile Include="ViewModels\MailItemViewModel.cs" />
+    <Compile Include="ViewModels\MailViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="Views\Calendar.xaml.cs">
       <DependentUpon>Calendar.xaml</DependentUpon>
@@ -149,6 +152,9 @@
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\CalendarViewModel.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />
+    <Compile Include="Views\Mail.xaml.cs">
+      <DependentUpon>Mail.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MyFiles.xaml.cs">
       <DependentUpon>MyFiles.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -166,6 +172,7 @@
     <Content Include="Assets\ContactsIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\EmailIcon.png" />
     <Content Include="Assets\Logo.scale-100.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -208,6 +215,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Contacts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Mail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

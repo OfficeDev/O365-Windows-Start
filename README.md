@@ -46,9 +46,19 @@ Users and Groups
   - Get profile picture  
   - Get user ID  
   - Check signed in/out state  
+	
+Mail  
+  - Get mail (with paged results)  
+  - Send mail  
+  - Delete mail  
 
 <a name="changehistory"></a>
 ## Change History ##
+January 26, 2015:
+
+- Added mail capabilities.
+
+
 December 17, 2014:
 
 - Simplified authentication flow and client creation in AuthenticationHelper.cs file.
@@ -88,6 +98,8 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
 	- (My Files) – Edit or delete users’ files  
 	- (Users and Groups) – Enable sign-on and read users' profiles  
 	- (Users and Groups) – Access your organization's directory  
+	- (Mail) - Read and write access to users' mail
+	- (Mail) - Send mail as a user
   
    6. After clicking OK in the Services Manager dialog box, assemblies for connecting to Office 365 REST APIs will be added to your project.
 

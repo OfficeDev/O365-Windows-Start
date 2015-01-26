@@ -4,6 +4,7 @@ using Microsoft.Office365.OutlookServices;
 using Office365StarterProject.Common;
 using Office365StarterProject.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Windows.Globalization.DateTimeFormatting;
 
@@ -27,7 +28,7 @@ namespace Office365StarterProject.ViewModels
         private string _attendees;
         private IEvent _serverEventData;
         private string _displayString;
-        CalendarOperations _calenderOperations = new CalendarOperations();
+        CalendarOperations _calendarOperations = new CalendarOperations();
 
         public string Subject
         {
@@ -228,7 +229,7 @@ namespace Office365StarterProject.ViewModels
                     LoggingViewModel.Instance.Information = "Updating event ...";
                     operationType = "update";
                     //Send changes to Exchange
-                    _serverEventData = await _calenderOperations.UpdateCalendarEventAsync(
+                    _serverEventData = await _calendarOperations.UpdateCalendarEventAsync(
                         this.Id,
                         this.LocationName,
                         this.BodyContent,
@@ -247,7 +248,7 @@ namespace Office365StarterProject.ViewModels
                     operationType = "save";
                     //Add the event
                     //Send the add request to Exchange service with new event properties
-                    this.Id = await _calenderOperations.AddCalendarEventAsync(
+                    this.Id = await _calendarOperations.AddCalendarEventAsync(
                         this.LocationName,
                         this.BodyContent,
                         this.Attendees,
@@ -314,7 +315,8 @@ namespace Office365StarterProject.ViewModels
                 bodyContent = Regex.Replace(bodyContent, "\r", "");
             }
             _body = bodyContent;
-            _attendees = _calenderOperations.BuildAttendeeList(_serverEventData.Attendees);
+
+            _attendees = _calendarOperations.BuildAttendeeList(_serverEventData.Attendees);
 
             this.IsNewOrDirty = false;
 

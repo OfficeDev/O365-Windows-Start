@@ -16,6 +16,8 @@ namespace Office365StarterProject.Helpers
     /// </summary>
     public class ContactsOperations
     {
+        private string _contactsCapability = ServiceCapabilities.Contacts.ToString();
+
         /// <summary>
         /// Gets a collection of contacts.
         /// </summary>
@@ -24,7 +26,7 @@ namespace Office365StarterProject.Helpers
         {
 
             // Make sure we have a reference to the Exchange client
-            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
+            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_contactsCapability);
 
             // Query contacts
             var contactsResults = await exchangeClient.Me.Contacts.OrderBy(c => c.DisplayName).ExecuteAsync();
@@ -70,7 +72,7 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the Exchange client
-                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
+                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_contactsCapability);
 
                 // This results in a call to the service.
                 await exchangeClient.Me.Contacts.AddContactAsync(newContact);
@@ -101,7 +103,7 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the Exchange client
-                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
+                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_contactsCapability);
 
                 contactToUpdate = await exchangeClient.Me.Contacts[selectedContactId].ExecuteAsync();
 
@@ -152,7 +154,7 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the Exchange client
-                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync();
+                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_contactsCapability);
 
                 // Get the contact to be removed from the Exchange service. This results in a call to the service.
                 var contactToDelete = await exchangeClient.Me.Contacts[selectedContactId].ExecuteAsync();

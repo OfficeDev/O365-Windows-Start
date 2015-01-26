@@ -42,6 +42,7 @@ namespace Office365StarterProject
 
         private static ApplicationDataContainer _settings = ApplicationData.Current.LocalSettings;
 
+
         //Property for storing and returning the authority used by the last authentication.
         //This value is populated when the user connects to the service and made null when the user signs out.
         private static string LastAuthority
@@ -134,7 +135,7 @@ namespace Office365StarterProject
                 try
                 {
                     //First, look for the authority used during the last authentication.
-                    //If that value is not populated, use _commonAuthority.
+                    //If that value is not populated, use CommonAuthority.
                     string authority = null;
                     if (String.IsNullOrEmpty(LastAuthority))
                     {
@@ -190,7 +191,7 @@ namespace Office365StarterProject
         /// Checks that an OutlookServicesClient object is available. 
         /// </summary>
         /// <returns>The OutlookServicesClient object. </returns>
-        public static async Task<OutlookServicesClient> EnsureOutlookClientCreatedAsync()
+        public static async Task<OutlookServicesClient> EnsureOutlookClientCreatedAsync(string capability)
         {
             //Check to see if this client has already been created. If so, return it. Otherwise, create a new one.
             if (_outlookClient != null)
@@ -202,7 +203,7 @@ namespace Office365StarterProject
                 try
                 {
                     // Now get the capability that you are interested in.
-                    CapabilityDiscoveryResult result = await GetDiscoveryCapabilityResultAsync("Calendar");
+                    CapabilityDiscoveryResult result = await GetDiscoveryCapabilityResultAsync(capability);
 
                     _outlookClient = new OutlookServicesClient(
                         result.ServiceEndpointUri,
@@ -387,6 +388,14 @@ namespace Office365StarterProject
                     // cache is for another user
                     cacheResult = null;
                 }
+            }
+
+            //Cache might exist from previous calls, but it might not include newly added capabilities.
+            else if (cacheResult != null && !cacheResult.DiscoveryInfoForServices.ContainsKey(capability))
+            {
+                cacheResult = null;
+                cacheResult = await CreateAndSaveDiscoveryServiceCacheAsync();
+                discoveryCapabilityResult = cacheResult.DiscoveryInfoForServices[capability];
             }
 
             if (cacheResult == null)

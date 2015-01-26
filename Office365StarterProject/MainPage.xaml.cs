@@ -50,6 +50,16 @@ namespace Office365StarterProject
             this.Frame.Navigate(typeof(MyFiles));
         }
 
+        private void Contacts_Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(Contacts));
+        }
+
+        private void Mail_Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(Mail));
+        }
+
         #region NavigationHelper registration
 
         /// The methods provided in this section are simply used to allow
@@ -78,10 +88,7 @@ namespace Office365StarterProject
         }
 
         #endregion
-        private void Contacts_Button_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(Contacts));
-        }
+
     }
 }
 //********************************************************* 
