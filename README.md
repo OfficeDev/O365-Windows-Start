@@ -65,7 +65,7 @@ December 17, 2014:
 
 - Added cache for the information from the discovery service so that the app doesn't query the service more than once.
 
-- Added support for corporate intranets and company accounts. The `UseCorporateNetwork` property of the `AuthenticationContext` object is now set to true. The project also now includes declarations for the Enterprise Authentication, Private Networks, and Shared User Certificates capabilities. See [App capability declarations (Windows Runtime apps)](http://msdn.microsoft.com/en-us/library/windows/apps/hh464936.aspx) for more information.
+- Added support for corporate intranets and company accounts. The `UseCorporateNetwork` property of the `AuthenticationContext` object is now set to true. The project also now includes declarations for the Enterprise Authentication, Private Networks, and Shared User Certificates capabilities. See [App capability declarations (Windows Runtime apps)](http://aka.ms/vaha2s) for more information.
 
 <a name="prerequisites"></a>
 
@@ -73,8 +73,8 @@ December 17, 2014:
 
 This sample requires the following:  
   - Visual Studio 2013 with Update 3.  
-  - [Office 365 API Tools version 1.3.41104.1](https://visualstudiogallery.msdn.microsoft.com/a15b85e6-69a7-4fdf-adda-a38066bb5155).  
-  - An [Office 365 developer site](https://portal.office.com/Signup/Signup.aspx?OfferId=6881A1CB-F4EB-4db3-9F18-388898DAF510&DL=DEVELOPERPACK&ali=1).  
+  - [Office 365 API Tools version 1.3.41104.1](http://aka.ms/k0534n).  
+  - An [Office 365 developer site](http://aka.ms/ro9c62).  
   - To use the Files part of this project, OneDrive for Business must be setup on your tenant, which happens the first time you sign-on to OneDrive for Business via the web browser.
 
 ###Configure the sample
@@ -148,7 +148,7 @@ Run the solution and sign in with your organizational account to Office 365.
 
 
 
-- You may run into an authentication error after deploying and running if apps do not have the ability to access account information in the [Windows Privacy Settings](http://www.microsoft.com/security/online-privacy/windows.aspx) menu. Set **Let my apps access my name, picture, and other account info** to **On**. This setting can be reset by a Windows Update. 
+- You may run into an authentication error after deploying and running if apps do not have the ability to access account information in the [Windows Privacy Settings](http://aka.ms/gqqx6p) menu. Set **Let my apps access my name, picture, and other account info** to **On**. This setting can be reset by a Windows Update. 
 
 
 ## Copyright ##
