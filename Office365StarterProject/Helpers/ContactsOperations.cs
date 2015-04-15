@@ -24,9 +24,8 @@ namespace Office365StarterProject.Helpers
         /// <returns>A collection of contact items.</returns>
         public async Task<List<IContact>> GetContactsAsync()
         {
-
             // Make sure we have a reference to the Exchange client
-            var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_contactsCapability);
+            var exchangeClient = await AuthenticationHelper.GetOutlookClientAsync(_contactsCapability);
 
             // Query contacts
             var contactsResults = await exchangeClient.Me.Contacts.OrderBy(c => c.DisplayName).ExecuteAsync();
@@ -72,7 +71,7 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the Exchange client
-                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_contactsCapability);
+                var exchangeClient = await AuthenticationHelper.GetOutlookClientAsync(_contactsCapability);
 
                 // This results in a call to the service.
                 await exchangeClient.Me.Contacts.AddContactAsync(newContact);
@@ -103,7 +102,7 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the Exchange client
-                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_contactsCapability);
+                var exchangeClient = await AuthenticationHelper.GetOutlookClientAsync(_contactsCapability);
 
                 contactToUpdate = await exchangeClient.Me.Contacts[selectedContactId].ExecuteAsync();
 
@@ -154,7 +153,7 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the Exchange client
-                var exchangeClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_contactsCapability);
+                var exchangeClient = await AuthenticationHelper.GetOutlookClientAsync(_contactsCapability);
 
                 // Get the contact to be removed from the Exchange service. This results in a call to the service.
                 var contactToDelete = await exchangeClient.Me.Contacts[selectedContactId].ExecuteAsync();

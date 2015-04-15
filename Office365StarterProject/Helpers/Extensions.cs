@@ -15,6 +15,8 @@ namespace Office365StarterProject.Helpers
         {
             return r.ReadString(r.ReadUInt32());
         }
+
+
     }
 }
 

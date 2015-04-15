@@ -119,7 +119,7 @@ namespace Office365StarterProject
         /// Checks that a Graph client is available.
         /// </summary>
         /// <returns>The Graph client.</returns>
-        public static async Task<ActiveDirectoryClient> EnsureGraphClientCreatedAsync()
+        public static async Task<ActiveDirectoryClient> GetGraphClientAsync()
         {
             //Check to see if this client has already been created. If so, return it. Otherwise, create a new one.
             if (_graphClient != null)
@@ -191,7 +191,7 @@ namespace Office365StarterProject
         /// Checks that an OutlookServicesClient object is available. 
         /// </summary>
         /// <returns>The OutlookServicesClient object. </returns>
-        public static async Task<OutlookServicesClient> EnsureOutlookClientCreatedAsync(string capability)
+        public static async Task<OutlookServicesClient> GetOutlookClientAsync(string capability)
         {
             //Check to see if this client has already been created. If so, return it. Otherwise, create a new one.
             if (_outlookClient != null)
@@ -252,7 +252,7 @@ namespace Office365StarterProject
         /// Checks that a SharePoint client is available to the client.
         /// </summary>
         /// <returns>The SharePoint Online client.</returns>
-        public static async Task<SharePointClient> EnsureSharePointClientCreatedAsync()
+        public static async Task<SharePointClient> GetSharePointClientAsync(string capability)
         {
             //Check to see if this client has already been created. If so, return it. Otherwise, create a new one.
             if (_sharePointClient != null)
@@ -265,7 +265,7 @@ namespace Office365StarterProject
                 {
 
                     // Now get the capability that you are interested in.
-                    CapabilityDiscoveryResult result = await GetDiscoveryCapabilityResultAsync("MyFiles");
+                    CapabilityDiscoveryResult result = await GetDiscoveryCapabilityResultAsync(capability);
 
                     _sharePointClient = new SharePointClient(
                         result.ServiceEndpointUri,
@@ -307,7 +307,6 @@ namespace Office365StarterProject
                 }
             }
         }
-
 
         /// <summary>
         /// Signs the user out of the service.

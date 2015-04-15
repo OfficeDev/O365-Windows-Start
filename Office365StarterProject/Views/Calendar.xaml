@@ -1,6 +1,6 @@
 ﻿<!-- Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See full license at the bottom of this file. -->
-    
-    <Page
+
+<Page
     x:Name="pageRoot"
     x:Class="Office365StarterProject.Views.Calendar"
     DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
@@ -71,7 +71,7 @@
         <ProgressBar Name="LoadCalendarProgress"  Width="900" DataContext="{Binding CalendarViewModel}"
                      Visibility="{Binding Path=LoadingCalendarEvents, Converter={StaticResource BooleanToVisibilityConverter}}"
                      Grid.Row="1" VerticalAlignment="Top" Margin="0,10,0,1"  IsIndeterminate="True"/>
-        
+
         <TextBlock Grid.Row="1"        
                    HorizontalAlignment="Center"
                    TextWrapping="Wrap"

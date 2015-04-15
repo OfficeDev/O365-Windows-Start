@@ -27,7 +27,7 @@ namespace Office365StarterProject.Helpers
                 IUser currentUser = null;
 
                 // Make sure we have a reference to the Azure Active Directory client
-                var aadClient = await AuthenticationHelper.EnsureGraphClientCreatedAsync();
+                var aadClient = await AuthenticationHelper.GetGraphClientAsync();
 
                 if (aadClient != null)
                 {

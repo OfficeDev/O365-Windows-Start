@@ -185,7 +185,7 @@ namespace Office365StarterProject.ViewModels
         /// <remarks>The event is created locally.</remarks>
         async void ExecuteNewEventCommandAsync()
         {
-            var aadClient = await AuthenticationHelper.EnsureGraphClientCreatedAsync();
+            var aadClient = await AuthenticationHelper.GetGraphClientAsync();
 
             var currentUser = await (aadClient.Users
                 .Where(i => i.ObjectId == AuthenticationHelper.LoggedInUser)

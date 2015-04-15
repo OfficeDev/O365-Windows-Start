@@ -19,13 +19,21 @@ namespace Office365StarterProject.Helpers
         /// <param name="bodyContent">The size of the results page.</param>
         internal async Task<List<Message>> GetEmailMessagesAsync(int pageNo, int pageSize)
         {
-            
+
             // Make sure we have a reference to the Outlook Services client
-            var outlookClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_mailCapability);
+            var outlookClient = await AuthenticationHelper.GetOutlookClientAsync(_mailCapability);
 
             var mailResults = await (from i in outlookClient.Me.Folders.GetById("Inbox").Messages
                                      orderby i.DateTimeReceived descending
                                      select i).Skip((pageNo - 1) * pageSize).Take(pageSize).ExecuteAsync();
+
+            foreach (var message in mailResults.CurrentPage)
+            {
+                  System.Diagnostics.Debug.WriteLine("Message '{0}' received at '{1}'.",
+                  message.Subject,
+                  message.DateTimeReceived.ToString());
+            }
+
 
             return (List<Message>)mailResults.CurrentPage;
 
@@ -76,7 +84,7 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the Outlook Services client.
-                var outlookClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_mailCapability);
+                var outlookClient = await AuthenticationHelper.GetOutlookClientAsync(_mailCapability);
 
                 //Send the mail.
                 await outlookClient.Me.SendMailAsync(draft, true);
@@ -107,7 +115,7 @@ namespace Office365StarterProject.Helpers
             try
             {
                 // Make sure we have a reference to the Outlook Services client
-                var outlookClient = await AuthenticationHelper.EnsureOutlookClientCreatedAsync(_mailCapability);
+                var outlookClient = await AuthenticationHelper.GetOutlookClientAsync(_mailCapability);
 
                 // Get the mail item to be removed.
                 thisMailItem = await outlookClient.Me.Folders.GetById("Inbox").Messages.GetById(selectedMailId).ExecuteAsync();

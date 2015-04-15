@@ -20,6 +20,8 @@ namespace Office365StarterProject.Helpers
     /// </summary>
     public class FileOperations
     {
+        private string _filesCapability = ServiceCapabilities.MyFiles.ToString();
+
         /// <summary>
         /// Performs a search of the default Documents folder. Displays the first page of results.
         /// </summary>
@@ -28,7 +30,7 @@ namespace Office365StarterProject.Helpers
         {
             try
             {
-                var sharePointClient = await AuthenticationHelper.EnsureSharePointClientCreatedAsync();
+                var sharePointClient = await AuthenticationHelper.GetSharePointClientAsync(_filesCapability);
 
                 // Performs a search of the default Documents folder (folder Id is "root")
                 // You could also specify another folder if you know its Id using the following syntax. 
@@ -55,7 +57,7 @@ namespace Office365StarterProject.Helpers
         internal async Task<bool> CreateNewTextFileAsync()
         {
             bool isSuccess = false;
-            var sharePointClient = await AuthenticationHelper.EnsureSharePointClientCreatedAsync();
+            var sharePointClient = await AuthenticationHelper.GetSharePointClientAsync(_filesCapability);
 
             try
             {
@@ -248,7 +250,7 @@ namespace Office365StarterProject.Helpers
                 StorageFile sFile = await picker.PickSingleFileAsync();
                 if (sFile != null)
                 {
-                    var sharePointClient = await AuthenticationHelper.EnsureSharePointClientCreatedAsync();
+                    var sharePointClient = await AuthenticationHelper.GetSharePointClientAsync(_filesCapability);
                     using (var stream = await sFile.OpenStreamForReadAsync())
                     {
                         File newFile = new File
