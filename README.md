@@ -96,12 +96,12 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
    3. On the sign-in dialog box, enter the username and password for your Office 365 tenant. We recommend that you use your Office 365 Developer Site. Often, this user name will follow the pattern <your-name>@<tenant-name>.onmicrosoft.com. If you do not have a developer site, you can get a free Developer Site as part of your MSDN Benefits or sign up for a free trial. Be aware that the user must be an Tenant Admin user—but for tenants created as part of an Office 365 Developer Site, this is likely to be the case already. Also developer accounts are usually limited to one sign-in.
    4. After you're signed in, you will see a list of all the services. Initially, no permissions will be selected, as the app is not registered to consume any services yet. 
    5. To register for the services used in this sample, choose the following permissions:  
-   	- (Calendar) – Have full access to users’ calendar  
-	- (Contacts) - Have full access to users' contacts  
-	- (My Files) – Edit or delete users’ files  
+   	- (Calendar) – Read and write user calendars.  
+	- (Contacts) - Read and write user contacts. 
+	- (My Files) – Edit or delete user files.
 	- (Users and Groups) – Enable sign-on and read users' profiles  
 	- (Users and Groups) – Access your organization's directory  
-	- (Mail) - Read and write access to users' mail
+	- (Mail) - Read and write user mail.
 	- (Mail) - Send mail as a user
   
    6. Click OK in the Services Manager dialog box.
