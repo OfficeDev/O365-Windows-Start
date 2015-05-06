@@ -1,4 +1,4 @@
-﻿# Office 365 Starter Project for Windows Store App #
+# Office 365 Starter Project for Windows Store App #
 
 [日本 (日本語)](https://github.com/OfficeDev/O365-Windows-Start/blob/master/loc/README-ja.md)
 
@@ -101,7 +101,7 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
    5. To register for the services used in this sample, choose the following permissions:  
    	- (Calendar) – Read and write user calendars.  
 	- (Contacts) - Read and write user contacts. 
-	- (My Files) – Edit or delete user files.
+	- (My Files) – Read and write user files.
 	- (Users and Groups) – Enable sign-on and read users' profiles  
 	- (Users and Groups) – Access your organization's directory  
 	- (Mail) - Read and write user mail.
