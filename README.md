@@ -1,4 +1,7 @@
-# Office 365 Starter Project for Windows Store App #
+﻿# Office 365 Starter Project for Windows Store App #
+
+[日本 (日本語)](https://github.com/OfficeDev/O365-Windows-Start/blob/master/loc/README-ja.md)
+
 
 **Table of Contents**
 
