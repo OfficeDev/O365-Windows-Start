@@ -10,8 +10,11 @@
 - [Prerequisites and Configuration](#prerequisites)
 - [Build](#build)
 - [Project Files of Interest](#project)
+- [Known Issues](#knownissues)
 - [Troubleshooting](#troubleshooting)
 - [License](https://github.com/OfficeDev/Office-365-APIs-Starter-Project-for-Windows/blob/master/LICENSE.txt)
+
+<a name="overview"></a>
 
 ## Overview ##
 
@@ -111,6 +114,7 @@ You can do this via the Office 365 API Tools for Visual Studio (which automates 
 
 **Note:** If you see any errors while installing packages during step 6, for example, *Unable to find "Microsoft.Azure.ActiveDirectory.GraphClient"*, make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive resolves this issue. We'll also work on shortening the folder names in a future update.      
 
+<a name="build"></a>
 ## Build ##
 
 After you've loaded the solution in Visual Studio, press F5 to build and debug.
@@ -135,12 +139,14 @@ Run the solution and sign in with your organizational account to Office 365.
    - FileSystemItemViewModel.cs  
    - ContactItemViewModel.cs  
 
+<a name="knownissues"></a>
 ## Known issues ##
 
 
 
 - None at the moment, but do let us know if you find any. We're listening. 
 
+<a name="troubleshooting"></a>
 ## Troubleshooting ##
 
 
