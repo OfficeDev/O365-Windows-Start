@@ -64,7 +64,7 @@ Office 365 Starter Project サンプルでは、Office 365 API Tools クライ�
 
 - アプリでサービスが何回も照会されないように検出サービスから情報をキャッシュする機能を追加
 
-- 企業イントラネットと企業アカウントのサポートを追加 `AuthenticationContext` オブジェクトの `UseCorporateNetwork` プロパティは True に設定されています。また、プロジェクトにエンタープライズ認証、プライベート ネットワーク、共有ユーザー証明書機能の宣言を追加しています。詳細については、[アプリ機能の宣言 (Windows ランタイム アプリ)](http://aka.ms/vaha2s_ja) をご覧ください。
+- 企業イントラネットと企業アカウントのサポートを追加 `AuthenticationContext` オブジェクトの `UseCorporateNetwork` プロパティは True に設定されています。また、プロジェクトにエンタープライズ認証、プライベート ネットワーク、共有ユーザー証明書機能の宣言を追加しています。詳細については、[アプリ機能の宣言 (Windows ランタイム アプリ)](http://aka.ms/vaha2s) をご覧ください。
 
 <a name="prerequisites"></a>
 
@@ -75,7 +75,7 @@ Office 365 Starter Project サンプルでは、Office 365 API Tools クライ�
   - Windows 8.1  
   - Visual Studio 2013 Update 3  
   - [Office 365 API Tools version 1.3.41104.1](http://aka.ms/k0534n).  
-  - [Office 365 開発者向けサイト](http://aka.ms/ro9c62_ja)  
+  - [Office 365 開発者向けサイト](http://aka.ms/ro9c62)  
   - このプロジェクトのファイルを使用するには、Web ブラウザーで OneDrive for Business に初めてするサインオンする際に、自身のテナントで OneDrive for Business をセットアップする必要があります。
 
 ###サンプルを構成する
