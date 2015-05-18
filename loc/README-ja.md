@@ -74,7 +74,7 @@ Office 365 Starter Project サンプルでは、Office 365 API Tools クライ�
 
   - Windows 8.1  
   - Visual Studio 2013 Update 3  
-  - [Office 365 API Tools version 1.3.41104.1](http://aka.ms/k0534n).  
+  - [Office 365 API Tools version 1.4.50428.2](http://aka.ms/k0534n).  
   - [Office 365 開発者向けサイト](http://aka.ms/ro9c62)  
   - このプロジェクトのファイルを使用するには、Web ブラウザーで OneDrive for Business に初めてするサインオンする際に、自身のテナントで OneDrive for Business をセットアップする必要があります。
 
