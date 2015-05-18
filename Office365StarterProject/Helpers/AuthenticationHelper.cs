@@ -318,7 +318,6 @@ namespace Office365StarterProject
                 return;
             }
 
-            await _authenticationContext.LogoutAsync(LoggedInUser);
             _authenticationContext.TokenCache.Clear();
             //Clean up all existing clients
             _graphClient = null;
