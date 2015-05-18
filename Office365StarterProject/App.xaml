@@ -11,6 +11,8 @@
         <SolidColorBrush x:Key="HyperLinkBrush" Color="#FFECE4FF" />
         <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#1799F0" />
         <x:String x:Key="ProgressBarIndeterminateForegroundThemeBrush">White</x:String>
+
+    <x:String x:Key="ida:AuthorizationUri">https://login.microsoftonline.com</x:String>
     </Application.Resources>
 </Application>
 <!--
