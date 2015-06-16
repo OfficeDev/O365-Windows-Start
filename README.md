@@ -80,7 +80,7 @@ December 17, 2014:
 This sample requires the following:  
 
   - Windows 8.1.  
-  - Visual Studio 2013 with Update 3.  
+  - Visual Studio 2013 with Update 4.  
   - [Office 365 API Tools version 1.4.50428.2](http://aka.ms/k0534n).  
   - An [Office 365 developer site](http://aka.ms/ro9c62).  
   - To use the Files part of this project, OneDrive for Business must be setup on your tenant, which happens the first time you sign-on to OneDrive for Business via the web browser.
