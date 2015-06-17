@@ -31,7 +31,7 @@ namespace Office365StarterProject
         // The AuthorizationUri is added as a resource in App.xaml when you regiter the app with 
         // Office 365. As a convenience, we load that value into a variable called _commonAuthority, adding _common to this Url to signify
         // multi-tenancy. This way it will always be in sync with whatever value is added to App.xaml.
-        private static readonly string CommonAuthority = App.Current.Resources["ida:AuthorizationUri"].ToString() + @"/Common";
+        private static readonly string CommonAuthority = App.Current.Resources["ida:AADInstance"].ToString() + @"Common";
         private static readonly Uri DiscoveryServiceEndpointUri = new Uri("https://api.office.com/discovery/v1.0/me/");
         private const string DiscoveryResourceId = "https://api.office.com/discovery/";
 
