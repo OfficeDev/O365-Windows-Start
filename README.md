@@ -168,8 +168,8 @@ Run the solution and sign in with your organizational account to Office 365.
 ## Additional resources ##
 * [Office 365 APIs platform overview](http://msdn.microsoft.com/office/office365/howto/platform-development-overview)
 * [File REST API reference](https://msdn.microsoft.com/office/office365/api/files-rest-operations)
-* [Calendar REST API reference](http://msdn.microsoft.com/office/office365/api/calendar-rest-operations)
-* [Mail REST API reference](https://msdn.microsoft.com/office/office365/api/mail-rest-operations)
+* [Outlook Calendar REST API reference](http://msdn.microsoft.com/office/office365/api/calendar-rest-operations)
+* [Outlook Mail REST API reference](https://msdn.microsoft.com/office/office365/api/mail-rest-operations)
 * [Microsoft Office 365 API Tools](https://visualstudiogallery.msdn.microsoft.com/a15b85e6-69a7-4fdf-adda-a38066bb5155)
 * [Office Dev Center](http://dev.office.com/)
 * [Office 365 APIs starter projects and code samples](http://msdn.microsoft.com/office/office365/howto/starter-projects-and-code-samples)
