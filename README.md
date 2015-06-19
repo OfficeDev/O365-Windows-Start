@@ -12,6 +12,7 @@
 - [Project Files of Interest](#project)
 - [Known Issues](#knownissues)
 - [Troubleshooting](#troubleshooting)
+- [Additional resources](#additional-resources)
 - [License](https://github.com/OfficeDev/Office-365-APIs-Starter-Project-for-Windows/blob/master/LICENSE.txt)
 
 <a name="overview"></a>
@@ -163,6 +164,18 @@ Run the solution and sign in with your organizational account to Office 365.
 - You may run into an authentication error after deploying and running if apps do not have the ability to access account information in the [Windows Privacy Settings](http://aka.ms/gqqx6p) menu. Set **Let my apps access my name, picture, and other account info** to **On**. This setting can be reset by a Windows Update. 
 
 - You run the Windows App Certification Kit against the installed app, and the app fails the supported APIs test. This likely happened because the Visual Studio tools installed older versions of some assemblies. Check the entries for Microsoft.Azure.ActiveDirectory.GraphClient and the Microsoft.OData assemblies in your project's packages.config file. Make sure that the version numbers for those assemblies match the version numbers in [this repo's version of packages.config](https://github.com/OfficeDev/O365-Windows-Start/blob/master/Office365StarterProject/packages.config). When you rebuild and reinstall the solution with the updated assemblies, the app should pass the supported APIs test.
+
+## Additional resources ##
+* [Office 365 APIs platform overview](http://msdn.microsoft.com/office/office365/howto/platform-development-overview)
+* [File REST API reference](https://msdn.microsoft.com/office/office365/api/files-rest-operations)
+* [Outlook Calendar REST API reference](http://msdn.microsoft.com/office/office365/api/calendar-rest-operations)
+* [Outlook Mail REST API reference](https://msdn.microsoft.com/office/office365/api/mail-rest-operations)
+* [Microsoft Office 365 API Tools](https://visualstudiogallery.msdn.microsoft.com/a15b85e6-69a7-4fdf-adda-a38066bb5155)
+* [Office Dev Center](http://dev.office.com/)
+* [Office 365 APIs starter projects and code samples](http://msdn.microsoft.com/office/office365/howto/starter-projects-and-code-samples)
+* [Connecting to Office 365 in Windows Store, Phone, and universal apps](https://github.com/OfficeDev/O365-Win-Connect)
+* [Office 365 Code Snippets for Windows](https://github.com/OfficeDev/O365-Win-Snippets)
+* [Office 365 Profile sample for Windows](https://github.com/OfficeDev/O365-Win-Profile)
 
 
 ## Copyright ##
