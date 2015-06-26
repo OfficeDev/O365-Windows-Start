@@ -13,6 +13,7 @@
 - [Known Issues](#knownissues)
 - [Troubleshooting](#troubleshooting)
 - [Additional resources](#additional-resources)
+- [Questions and comments](#questions-and-comments)
 - [License](https://github.com/OfficeDev/Office-365-APIs-Starter-Project-for-Windows/blob/master/LICENSE.txt)
 
 <a name="overview"></a>
@@ -177,6 +178,13 @@ Run the solution and sign in with your organizational account to Office 365.
 * [Office 365 Code Snippets for Windows](https://github.com/OfficeDev/O365-Win-Snippets)
 * [Office 365 Profile sample for Windows](https://github.com/OfficeDev/O365-Win-Profile)
 * [Office 365 REST API Explorer for Sites](https://github.com/OfficeDev/Office-365-REST-API-Explorer)
+
+
+## Questions and comments
+
+We'd love to get your feedback on the O365 Windows Starter project. You can send your questions and suggestions to us in the [Issues](https://github.com/OfficeDev/O365-Windows-Start/issues) section of this repository.
+
+Questions about Office 365 development in general should be posted to [Stack Overflow](http://stackoverflow.com/questions/tagged/Office365+API). Make sure that your questions or comments are tagged with [Office365] and [API].
 
 
 ## Copyright ##
