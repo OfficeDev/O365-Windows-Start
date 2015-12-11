@@ -87,13 +87,22 @@ This sample requires the following:
   - An [Office 365 developer site](http://aka.ms/ro9c62).  
   - To use the Files part of this project, OneDrive for Business must be setup on your tenant, which happens the first time you sign-on to OneDrive for Business via the web browser.
 
+**Note:** This sample will work if you are using Visual Studio 2015 with Update 1. After you configure the sample, though, you'll need to edit this key/value pair in your App.xaml file: 
+
+`<x:String x:Key="ida:ClientId">your client id</x:String>`.
+
+The code in the sample looks for the `ClientID` key, so the key/value pair should look like this:
+
+`<x:String x:Key="ida:ClientID">your client id</x:String>`.
+
 ###Configure the sample
 
 Follow these steps to configure the sample.
 
    1. Open the O365-APIs-Start-Windows.sln file using Visual Studio 2013.
-   2. Register and configure the app to consume Office 365 services (detailed below).
-   3. Build the solution. The NuGet Package Restore feature will load the assemblies listed in the packages.config file. You should do this before adding connected services in the following steps so that you don't get older versions of some assemblies.
+   2. Build the solution. The NuGet Package Restore feature will load the assemblies listed in the packages.config file. You should do this before adding connected services in the following steps so that you don't get older versions of some assemblies.
+   3. Register and configure the app to consume Office 365 services (detailed below).
+
 
 ###Register app to consume Office 365 APIs
 
