@@ -71,7 +71,7 @@ Office 365 Starter Project サンプルでは、Office 365 API Tools クライ�
 
 - アプリでサービスが何回も照会されないように検出サービスから情報をキャッシュする機能を追加
 
-- 企業イントラネットと企業アカウントのサポートを追加 `AuthenticationContext` オブジェクトの `UseCorporateNetwork` プロパティは True に設定されています。また、プロジェクトにエンタープライズ認証、プライベート ネットワーク、共有ユーザー証明書機能の宣言を追加しています。詳細については、[アプリ機能の宣言 (Windows ランタイム アプリ)](http://aka.ms/vaha2s_ja) をご覧ください。
+- 企業イントラネットと企業アカウントのサポートを追加 `AuthenticationContext` オブジェクトの `UseCorporateNetwork` プロパティは True に設定されています。また、プロジェクトにエンタープライズ認証、プライベート ネットワーク、共有ユーザー証明書機能の宣言を追加しています。詳細については、[アプリ機能の宣言 (Windows ランタイム アプリ)](http://aka.ms/vaha2s) をご覧ください。
 
 <a name="prerequisites"></a>
 
@@ -82,16 +82,25 @@ Office 365 Starter Project サンプルでは、Office 365 API Tools クライ�
   - Windows 8.1  
   - Visual Studio 2013 更新プログラム 4。  
   - [Office 365 API Tools バージョン 1.4.50428.2](http://aka.ms/k0534n)。  
-  - [Office 365 開発者向けサイト](http://aka.ms/ro9c62_ja)  
-  - このプロジェクトのファイルを使用するには、Web ブラウザーで OneDrive for Business に初めてするサインオンする際に、自身のテナントで OneDrive for Business をセットアップする必要があります。
+  - [Office 365 開発者向けサイト](http://aka.ms/ro9c62)  
+  - このプロジェクトの [ファイル] の部分を使用するには、Web ブラウザーから OneDrive for Business に初めてするサインオンする際に、自身のテナントで OneDrive for Business をセットアップする必要があります。
+
+**注:**このサインプルは、Visual Studio 2015 Update 1 を使用している場合に動作します。ただし、サンプルを構成した後は、App.xaml ファイルの中のキーと値のペアを編集する必要があります。 
+
+`<x:String x:Key="ida:ClientId">your client id</x:String>`.
+
+サンプルのコードは `ClientID` キーを探すため、キーと値のペアは次のようになります:
+
+`<x:String x:Key="ida:ClientID">your client id</x:String>`.
 
 ###サンプルを構成する
 
 次の手順に従ってサンプルを構成します。
 
    1. Visual Studio 2013 を使用して O365-APIs-Start-Windows.sln ファイルを開きます。
-   2. Office 365 サービスを使用するようアプリを登録し構成します (詳細は以下をご覧ください)。
-   3. ソリューションをビルドします。 NuGet パッケージ復元機能で packages.config ファイルにリストされたアセンブリが読み込まれます。 一部のアセンブリが旧バージョンにならないように、次の手順で接続済みサービスを追加する前にこれを行う必要があります。
+   2. ソリューションをビルドします。 NuGet パッケージ復元機能で packages.config ファイルにリストされたアセンブリが読み込まれます。 一部のアセンブリが旧バージョンにならないように、次の手順で接続済みサービスを追加する前にこれを行う必要があります。
+   3. Office 365 サービスを使用するようアプリを登録し構成します (詳細は以下をご覧ください)。
+
 
 ###Office 365 API を使用するようアプリを登録します。
 
