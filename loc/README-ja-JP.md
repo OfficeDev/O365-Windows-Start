@@ -1,4 +1,4 @@
-# Office 365 Starter Project for Windows ストア アプリ #
+# <a name="office-365-starter-project-for-windows-store-app"></a>Office 365 Starter Project for Windows ストア アプリ #
 
 [日本 (日本語)](https://github.com/OfficeDev/O365-Windows-Start/blob/master/loc/README-ja.md) (日本語)
 
@@ -18,9 +18,9 @@
 
 <a name="overview"></a>
 
-## 概要 ##
+## <a name="overview"></a>概要 ##
 
-Office 365 Starter Project サンプルでは、Office 365 API Tools クライアント ライブラリを使用して、Office 365 の [ファイル]、[カレンダー]、[連絡先] サービスのエンドポイントに対する基本的な操作を説明します。また、サンプルではアプリ 1 つで複数の Office 365 サービスに対する認証を行う方法や、[ユーザーとグループ] サービスからユーザー情報を取得する方法についてご確認いただけます。 このプロジェクトのアップデート時に電子メールなどさらに多くの API の使用方法についての例を追加する予定ですので、引き続きご確認ください。
+Office 365 Starter Project サンプルでは、Office 365 API Tools クライアント ライブラリを使って Office 365 のファイル、カレンダー、連絡先サービス エンドポイントに対する基本的な操作を解説しています。サンプルではまた、1 つのアプリで複数の Office 365 サービスを認証する方法や、[ユーザーまたはグループ] サービスからユーザー情報を取得する方法について説明しています。このプロジェクトのアップデート時に電子メールなどさらに多くの API の使用方法についての例を追加する予定ですので、引き続きご確認ください。
 
 このサンプルで実行できる操作を次に示します。
 
@@ -52,14 +52,14 @@ Office 365 Starter Project サンプルでは、Office 365 API Tools クライ�
   - プロファイル画像を取得する  
   - ユーザー ID を取得する  
   - サインイン / サインアウト状態を確認する  
-	
+    
 メール  
   - ページ結果でメールを受信する  
   - メールを送信する  
   - メールを削除する  
 
 <a name="changehistory"></a>
-## 変更履歴 ##
+## <a name="change-history"></a>変更履歴 ##
 2015 年 1 月 26 日:
 
 - メール機能を追加しました
@@ -71,11 +71,11 @@ Office 365 Starter Project サンプルでは、Office 365 API Tools クライ�
 
 - アプリでサービスが何回も照会されないように検出サービスから情報をキャッシュする機能を追加
 
-- 企業イントラネットと企業アカウントのサポートを追加 `AuthenticationContext` オブジェクトの `UseCorporateNetwork` プロパティは True に設定されています。また、プロジェクトにエンタープライズ認証、プライベート ネットワーク、共有ユーザー証明書機能の宣言を追加しています。詳細については、[アプリ機能の宣言 (Windows ランタイム アプリ)](http://aka.ms/vaha2s) をご覧ください。
+- 企業イントラネットと企業アカウントのサポートを追加 `UseCorporateNetwork` オブジェクトの `AuthenticationContext` プロパティは True に設定されています。また、プロジェクトにエンタープライズ認証、プライベート ネットワーク、共有ユーザー証明書機能の宣言を追加しています。詳細については、[アプリ機能の宣言 (Windows ランタイム アプリ)](http://aka.ms/vaha2s) をご覧ください。
 
 <a name="prerequisites"></a>
 
-## 前提条件と構成 ##
+## <a name="prerequisites-and-configuration"></a>前提条件と構成 ##
 
 このサンプルを実行するには次のものが必要です。  
 
@@ -87,13 +87,13 @@ Office 365 Starter Project サンプルでは、Office 365 API Tools クライ�
 
 **注:**このサインプルは、Visual Studio 2015 Update 1 を使用している場合に動作します。ただし、サンプルを構成した後は、App.xaml ファイルの中のキーと値のペアを編集する必要があります。 
 
-`<x:String x:Key="ida:ClientId">your client id</x:String>`.
+`<x:String x:Key="ida:ClientId">your client id</x:String>`
 
 サンプルのコードは `ClientID` キーを探すため、キーと値のペアは次のようになります:
 
-`<x:String x:Key="ida:ClientID">your client id</x:String>`.
+`<x:String x:Key="ida:ClientID">your client id</x:String>`
 
-###サンプルを構成する
+###<a name="configure-the-sample"></a>サンプルを構成する
 
 次の手順に従ってサンプルを構成します。
 
@@ -102,7 +102,7 @@ Office 365 Starter Project サンプルでは、Office 365 API Tools クライ�
    3. Office 365 サービスを使用するようアプリを登録し構成します (詳細は以下をご覧ください)。
 
 
-###Office 365 API を使用するようアプリを登録します。
+###<a name="register-app-to-consume-office-365-apis"></a>Office 365 API を使用するようアプリを登録します。
 
 登録は Office 365 API Tools for Visual Studio で自動的に行うことができます。 必ず Visual Studio ギャラリーから Office 365 API ツールをダウンロードしてインストールしてください。
 
@@ -111,25 +111,25 @@ Office 365 Starter Project サンプルでは、Office 365 API Tools クライ�
    3. [サインイン] ダイアログ ボックスで、Office 365 テナント用のユーザー名とパスワードを入力します。 自分の Office 365 開発者向けサイトを使用することをお勧めします。 多くの場合、このユーザー名は <your-name>@<tenant-name>.onmicrosoft.com というパターンになります。 自分の開発者向けサイトを持っていない場合、MSDN 特典の一部として無料で、または無料試用版にサインアップすることで入手できます。 ユーザーはテナント管理ユーザーである必要があることにご注意ください。Office 365 開発者向けサイトの一部として作成されたテナントでは、ほとんどの場合テナント管理ユーザーになります。 また、開発者アカウントは通常 1 つのサインインに制限されます。
    4. サインイン後、すべてのサービスを確認できます。 最初はサービスを使用するようアプリが登録されていないため、権限は選択されません。 
    5. このサンプルで使用するサービスを登録するには、次の権限を選択します。  
-   	- (予定表) – 予定表の読み取りと書き込み  
-	- (連絡先) － 連絡先の読み取りと書き込み 
-	- (マイ ファイル) － ファイルの読み取りと書き込み
-	- (ユーザーとグループ) － サインインとプロファイルの読み取り  
-	- (Users and Groups) – 所属する組織のディレクトリへのアクセス権限
-	- (メール) - メールの読み取りと書き込み
-	- (メール) - ユーザーとしてのメールの送信
+    - (予定表) – 予定表の読み取りと書き込み  
+    - (連絡先) － 連絡先の読み取りと書き込み 
+    - (マイ ファイル) － ファイルの読み取りと書き込み
+    - (ユーザーとグループ) － サインインとプロファイルの読み取り  
+    - (Users and Groups) – 所属する組織のディレクトリへのアクセス権限
+    - (メール) - メールの読み取りと書き込み
+    - (メール) - ユーザーとしてのメールの送信
   
    6. [サービス マネージャー] ダイアログ ボックスで [OK] をクリックします。
 
-**メモ:** 手順 6 でパッケージのインストール中にエラーが発生した場合 (たとえば 「"Microsoft.Azure.ActiveDirectory.GraphClient" が見つかりません」など)、ソリューションを保存したローカル パスが長すぎない / 深すぎないことをご確認ください。 デバイスのルート近くにソリューションを移動すると問題が解決します。 また、今後のアップデートでフォルダー名を短くする予定です。      
+**注:** 手順 6 でパッケージのインストール中にエラー (たとえば*「"Microsoft.Azure.ActiveDirectory.GraphClient" が見つかりません」*など) が表示された場合は、ソリューションを配置した場所のローカル パスが長すぎたり深すぎたりしないか確認してください。ドライブのルート近くにソリューションを移動すると問題が解決します。また、今後のアップデートでフォルダー名を短くする予定です。      
 
 <a name="build"></a>
-## ビルド ##
+## <a name="build"></a>ビルド ##
 
 Visual Studio にソリューションを読み込ませたら、F5 を押してビルドとデバッグを行います。 ソリューションを実行し、Office 365 組織アカウントでサインインします。
 
 <a name="project"></a>
-## プロジェクト関連ファイル ##
+## <a name="project-files-of-interest"></a>プロジェクト関連ファイル ##
 
 **ヘルパー クラス**  
    - CalendarOperations.cs  
@@ -148,14 +148,14 @@ Visual Studio にソリューションを読み込ませたら、F5 を押して
    - ContactItemViewModel.cs  
 
 <a name="knownissues"></a>
-## 既知の問題 ##
+## <a name="known-issues"></a>既知の問題 ##
 
 
 
 - この時点では存在しませんが、何かありましたらお知らせください。 情報をお待ちしています。 
 
 <a name="troubleshooting"></a>
-## トラブルシューティング ##
+## <a name="troubleshooting"></a>トラブルシューティング ##
 
 
 
@@ -164,7 +164,7 @@ Visual Studio にソリューションを読み込ませたら、F5 を押して
 
 
 
-- パッケージのインストール中に「Microsoft.Azure.ActiveDirectory.GraphClient" が見つかりません」などのエラーが発生します。 ソリューションを保存したローカル パスが長すぎない / 深すぎないことをご確認ください。 デバイスのルート近くにソリューションを移動すると問題が解決します。 また、今後のアップデートでフォルダー名を短くする予定です。  
+- パッケージのインストール中に*「"Microsoft.Azure.ActiveDirectory.GraphClient" が見つかりません」*などのエラーが発生します。ソリューションを配置した場所のローカル パスが長すぎたり深すぎたりしないか確認してください。ドライブのルート近くにソリューションを移動すると問題が解決します。また、今後のアップデートでフォルダー名を短くする予定です。  
 
 
 
@@ -172,30 +172,31 @@ Visual Studio にソリューションを読み込ませたら、F5 を押して
 
 - インストール済みアプリに対して Windows アプリ認定キットを実行すると、そのアプリがサポート済み API のテストに失敗します。 Visual Studio ツールでインストールされた一部のアセンブリが旧バージョンであることが原因の可能性があります。 プロジェクトの packages.config ファイルで Microsoft.Azure.ActiveDirectory.GraphClient と Microsoft.OData アセンブリのエントリをご確認ください。 これらのアセンブリのバージョン番号が、[このリポジトリの packages.config バージョン](https://github.com/OfficeDev/O365-Windows-Start/blob/master/Office365StarterProject/packages.config)のバージョン番号と一致していることをご確認ください。 更新したアセンブリでソリューションをリビルドして再インストールするときは、アプリがサポート済み API テストに合格する必要があります。
 
-## その他の技術情報 ##
+## <a name="additional-resources"></a>その他の技術情報 ##
 * [Office 365 API プラットフォームの概要](http://msdn.microsoft.com/office/office365/howto/platform-development-overview)
 * [ファイル REST API リファレンス](https://msdn.microsoft.com/office/office365/api/files-rest-operations)
 * [Outlook 予定表 REST API リファレンス](http://msdn.microsoft.com/office/office365/api/calendar-rest-operations)
 * [Outlook メール REST API リファレンス](https://msdn.microsoft.com/office/office365/api/mail-rest-operations)
 * [Microsoft Office 365 API ツール](https://visualstudiogallery.msdn.microsoft.com/a15b85e6-69a7-4fdf-adda-a38066bb5155)
 * [Office デベロッパー センター](http://dev.office.com/)
-* [Office 365 API スタート プロジェクトおよびサンプル コード](http://msdn.microsoft.com/office/office365/howto/starter-projects-and-code-samples)
+* [Office 365 API スタート プロジェクトとコード サンプル](http://msdn.microsoft.com/office/office365/howto/starter-projects-and-code-samples)
 * [Windows ストア、電話、およびユニバーサル アプリで Office 365 に接続する](https://github.com/OfficeDev/O365-Win-Connect)
 * [Windows 用 Office 365 コード スニペット](https://github.com/OfficeDev/O365-Win-Snippets)
 * [Windows 用 Office 365 プロファイル サンプル](https://github.com/OfficeDev/O365-Win-Profile)
-* [サイト用 Office 365 REST API Explorer](https://github.com/OfficeDev/Office-365-REST-API-Explorer)
+* [サイト用 Office 365 REST API エクスプローラー](https://github.com/OfficeDev/Office-365-REST-API-Explorer)
 
 
-## 質問とコメント
+## <a name="questions-and-comments"></a>質問とコメント
 
 O365 Windows Starter プロジェクトについて、Microsoft にフィードバックをお寄せください。質問や提案につきましては、このリポジトリの「[問題](https://github.com/OfficeDev/O365-Windows-Start/issues)」セクションに送信できます。
 
 Office 365 開発全般の質問につきましては、「[スタック オーバーフロー](http://stackoverflow.com/questions/tagged/Office365+API)」に投稿してください。質問またはコメントには、必ず [Office365] および [API] のタグを付けてください。
 
 
-## 著作権 ##
+## <a name="copyright"></a>著作権 ##
 
-Copyright (c) Microsoft. All rights reserved.
+Copyright (c) Microsoft.All rights reserved.
 
 
 
+このプロジェクトでは、[Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/) が採用されています。詳細については、「[Code of Conduct の FAQ](https://opensource.microsoft.com/codeofconduct/faq/)」を参照してください。また、その他の質問やコメントがあれば、[opencode@microsoft.com](mailto:opencode@microsoft.com) までお問い合わせください。
